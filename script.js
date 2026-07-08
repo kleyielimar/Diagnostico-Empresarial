@@ -1,6 +1,9 @@
 const CONFIG = {
   bookingUrl: "https://calendar.app.google/Dy2h9mcBh4KhMZ5eA",
   systemeFormAction: "",
+  supabaseUrl: "",
+  supabaseAnonKey: "",
+  supabaseTable: "diagnostico_orden_leads",
 };
 
 const questions = [
@@ -108,6 +111,13 @@ const levels = [
     max: 8,
     title: "Tu negocio depende demasiado de ti",
     label: "Alta dependencia",
+    archetype: "La Fundadora Pulpo",
+    archetypeText:
+      "Sostienes demasiadas decisiones, recordatorios y detalles a la vez. El negocio existe, pero todavia no tiene suficiente estructura para soltar peso sin perder control.",
+    buyerSignal: "Necesita orden antes de contratar mas ayuda.",
+    visualSubtitle: "Mucho movimiento, poca estructura visible.",
+    gap: "Procesos en tu cabeza y seguimiento manual.",
+    handoff: "Mapear lo repetible antes de delegar.",
     summary:
       "Tu negocio puede estar vendiendo, pero la operacion todavia descansa demasiado sobre tu memoria, decisiones y seguimiento diario.",
     meaning:
@@ -121,6 +131,13 @@ const levels = [
     max: 15,
     title: "Tu negocio esta en crecimiento desordenado",
     label: "Orden parcial",
+    archetype: "La Operadora en Transicion",
+    archetypeText:
+      "Ya tienes algunas bases, pero todavia hay huecos que te obligan a improvisar. Este es el momento ideal para convertir experiencia en sistema.",
+    buyerSignal: "Esta lista para priorizar procesos y delegar con criterio.",
+    visualSubtitle: "Hay avances, pero todavia falta una ruta clara.",
+    gap: "Procesos criticos sin instrucciones simples.",
+    handoff: "Priorizar que se delega, automatiza y documenta.",
     summary:
       "Ya existen algunas bases, pero todavia hay partes importantes que dependen de improvisacion, excepciones o recordatorios manuales.",
     meaning:
@@ -134,6 +151,13 @@ const levels = [
     max: 21,
     title: "Tu negocio esta cerca de delegar con mas control",
     label: "Base funcional",
+    archetype: "La Delegadora Selectiva",
+    archetypeText:
+      "Tu operacion ya tiene estructura en varias areas. Ahora toca reforzar responsabilidades, criterios y seguimiento para que el crecimiento no dependa de estar encima de todo.",
+    buyerSignal: "Puede avanzar hacia delegacion, roles y medicion.",
+    visualSubtitle: "Existe base; falta convertirla en control repetible.",
+    gap: "Responsabilidades y criterios aun incompletos.",
+    handoff: "Crear mapa de responsabilidades y seguimiento.",
     summary:
       "Tienes estructura en varias areas, pero todavia necesitas reforzar documentacion, seguimiento y criterios antes de escalar mas.",
     meaning:
@@ -147,6 +171,13 @@ const levels = [
     max: 24,
     title: "Tu negocio tiene estructura para crecer con menos friccion",
     label: "Listo para optimizar",
+    archetype: "La CEO Optimizadora",
+    archetypeText:
+      "Tu negocio tiene bases claras. El proximo salto esta en medir mejor, optimizar la experiencia del cliente y preparar decisiones con menos friccion.",
+    buyerSignal: "Busca optimizacion, indicadores y escala mas fina.",
+    visualSubtitle: "La estructura ya sostiene; ahora toca afinar.",
+    gap: "Metricas y cuellos de botella finos.",
+    handoff: "Auditar experiencia, tiempos e indicadores.",
     summary:
       "Tu operacion ya tiene bases claras. El siguiente paso no es ordenar desde cero, sino optimizar, medir y preparar mejor la escala.",
     meaning:
@@ -175,6 +206,8 @@ const intakePanel = document.getElementById("intakePanel");
 const intakeForm = document.getElementById("intakeForm");
 const bookingPanel = document.getElementById("bookingPanel");
 const bookingLink = document.getElementById("bookingLink");
+const copySummaryBtn = document.getElementById("copySummaryBtn");
+const downloadCardBtn = document.getElementById("downloadCardBtn");
 
 function postEmbedHeight() {
   const height = Math.max(
@@ -211,6 +244,42 @@ function getAnsweredCount() {
 
 function getLevel(score = getScore()) {
   return levels.find((level) => score >= level.min && score <= level.max) || levels[0];
+}
+
+function getLeadPayload(stage, extra = {}) {
+  const level = getLevel();
+  return {
+    stage,
+    first_name: document.getElementById("leadName")?.value.trim() || extra.first_name || "",
+    email: document.getElementById("leadEmail")?.value.trim() || extra.email || "",
+    score: getScore(),
+    level: level.label,
+    archetype: level.archetype,
+    buyer_signal: level.buyerSignal,
+    completed_at: new Date().toISOString(),
+    ...extra,
+  };
+}
+
+async function saveLeadRecord(stage, extra = {}) {
+  const payload = getLeadPayload(stage, extra);
+  const storageKey = stage === "intake" ? "diagnosticoOrdenIntake" : "diagnosticoOrdenLead";
+  window.localStorage.setItem(storageKey, JSON.stringify(payload));
+
+  if (!CONFIG.supabaseUrl || !CONFIG.supabaseAnonKey) return payload;
+
+  await fetch(`${CONFIG.supabaseUrl}/rest/v1/${CONFIG.supabaseTable}`, {
+    method: "POST",
+    headers: {
+      apikey: CONFIG.supabaseAnonKey,
+      Authorization: `Bearer ${CONFIG.supabaseAnonKey}`,
+      "Content-Type": "application/json",
+      Prefer: "return=minimal",
+    },
+    body: JSON.stringify(payload),
+  }).catch(() => null);
+
+  return payload;
 }
 
 function renderQuestion() {
@@ -282,12 +351,7 @@ nextBtn.addEventListener("click", () => {
 leadForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const payload = {
-    first_name: document.getElementById("leadName").value.trim(),
-    email: document.getElementById("leadEmail").value.trim(),
-    score: getScore(),
-    level: getLevel().label,
-  };
+  const payload = getLeadPayload("lead");
 
   if (CONFIG.systemeFormAction) {
     await fetch(CONFIG.systemeFormAction, {
@@ -297,14 +361,24 @@ leadForm.addEventListener("submit", async (event) => {
     }).catch(() => null);
   }
 
-  window.localStorage.setItem("diagnosticoOrdenLead", JSON.stringify(payload));
+  await saveLeadRecord("lead", payload);
   renderResult();
 });
 
 function renderResult() {
   const level = getLevel();
+  const score = getScore();
   document.getElementById("result-title").textContent = level.title;
   document.getElementById("resultSummary").textContent = level.summary;
+  document.getElementById("resultScore").textContent = `${score}/24`;
+  document.getElementById("archetypeLabel").textContent = level.archetype;
+  document.getElementById("archetypeText").textContent = level.archetypeText;
+  document.getElementById("buyerSignal").textContent = level.buyerSignal;
+  document.getElementById("shareArchetype").textContent = level.archetype;
+  document.getElementById("shareSubtitle").textContent = level.visualSubtitle;
+  document.getElementById("shareScore").textContent = `${score}/24`;
+  document.getElementById("shareGap").textContent = level.gap;
+  document.getElementById("shareNext").textContent = level.handoff;
   document.getElementById("meaningText").textContent = level.meaning;
   document.getElementById("nextStepText").textContent = level.next;
   document.getElementById("reviewList").innerHTML = level.review
@@ -317,26 +391,146 @@ function renderResult() {
   scheduleEmbedHeight();
 }
 
+function buildSummaryText() {
+  const level = getLevel();
+  return [
+    "Diagnostico de Orden Empresarial - Kleyi Elimar",
+    `Arquetipo: ${level.archetype}`,
+    `Puntaje: ${getScore()}/24`,
+    `Brecha principal: ${level.gap}`,
+    `Siguiente paso: ${level.handoff}`,
+  ].join("\n");
+}
+
+copySummaryBtn.addEventListener("click", async () => {
+  const text = buildSummaryText();
+  await navigator.clipboard?.writeText(text).catch(() => null);
+  copySummaryBtn.textContent = "Resumen copiado";
+  window.setTimeout(() => {
+    copySummaryBtn.textContent = "Copiar resumen";
+  }, 1800);
+});
+
+function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines = 5) {
+  const words = text.split(" ");
+  let line = "";
+  let lines = 0;
+
+  for (let index = 0; index < words.length; index += 1) {
+    const testLine = line ? `${line} ${words[index]}` : words[index];
+    if (ctx.measureText(testLine).width > maxWidth && line) {
+      ctx.fillText(line, x, y);
+      line = words[index];
+      y += lineHeight;
+      lines += 1;
+      if (lines >= maxLines - 1) break;
+    } else {
+      line = testLine;
+    }
+  }
+
+  if (line && lines < maxLines) ctx.fillText(line, x, y);
+}
+
+function drawRoundedRect(ctx, x, y, width, height, radius) {
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.arcTo(x + width, y, x + width, y + height, radius);
+  ctx.arcTo(x + width, y + height, x, y + height, radius);
+  ctx.arcTo(x, y + height, x, y, radius);
+  ctx.arcTo(x, y, x + width, y, radius);
+  ctx.closePath();
+  ctx.fill();
+}
+
+downloadCardBtn.addEventListener("click", () => {
+  const level = getLevel();
+  const canvas = document.createElement("canvas");
+  canvas.width = 1080;
+  canvas.height = 1350;
+  const ctx = canvas.getContext("2d");
+
+  ctx.fillStyle = "#e9f5f6";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "#a3d2d5";
+  ctx.globalAlpha = 0.55;
+  ctx.beginPath();
+  ctx.arc(920, 170, 300, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(150, 1180, 360, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+
+  ctx.fillStyle = "#ffffff";
+  drawRoundedRect(ctx, 72, 88, 936, 1174, 28);
+
+  ctx.fillStyle = "#6aa5a9";
+  ctx.font = "700 32px Arial";
+  ctx.fillText("Kleyi Elimar", 120, 160);
+
+  ctx.fillStyle = "#45625d";
+  ctx.font = "900 58px Arial";
+  wrapText(ctx, "Diagnostico de Orden Empresarial", 120, 250, 820, 68, 3);
+
+  ctx.fillStyle = "#6aa5a9";
+  ctx.font = "700 28px Arial";
+  ctx.fillText("Tu arquetipo operativo", 120, 460);
+
+  ctx.fillStyle = "#45625d";
+  ctx.font = "900 74px Arial";
+  wrapText(ctx, level.archetype, 120, 550, 820, 82, 3);
+
+  ctx.fillStyle = "#45625d";
+  drawRoundedRect(ctx, 120, 760, 270, 180, 22);
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "900 64px Arial";
+  ctx.fillText(`${getScore()}/24`, 158, 845);
+  ctx.font = "700 24px Arial";
+  ctx.fillText("Orden actual", 158, 890);
+
+  ctx.fillStyle = "#eef8f8";
+  drawRoundedRect(ctx, 430, 760, 458, 180, 22);
+  ctx.fillStyle = "#6aa5a9";
+  ctx.font = "700 24px Arial";
+  ctx.fillText("Brecha principal", 470, 820);
+  ctx.fillStyle = "#45625d";
+  ctx.font = "800 34px Arial";
+  wrapText(ctx, level.gap, 470, 870, 360, 42, 2);
+
+  ctx.fillStyle = "#45625d";
+  ctx.font = "700 30px Arial";
+  ctx.fillText("Siguiente paso", 120, 1040);
+  ctx.font = "900 44px Arial";
+  wrapText(ctx, level.handoff, 120, 1110, 820, 54, 3);
+
+  ctx.fillStyle = "#6aa5a9";
+  ctx.font = "700 24px Arial";
+  ctx.fillText("info.kleyielimar.com/diagnostico-empresarial", 120, 1215);
+
+  const link = document.createElement("a");
+  link.download = "diagnostico-orden-empresarial-kleyi.png";
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+});
+
 startIntakeBtn.addEventListener("click", () => {
   intakePanel.classList.remove("hidden");
   intakePanel.scrollIntoView({ behavior: "smooth", block: "start" });
   scheduleEmbedHeight();
 });
 
-intakeForm.addEventListener("submit", (event) => {
+intakeForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const intakeData = Object.fromEntries(new FormData(intakeForm).entries());
   const storedLead = JSON.parse(window.localStorage.getItem("diagnosticoOrdenLead") || "{}");
 
-  window.localStorage.setItem(
-    "diagnosticoOrdenIntake",
-    JSON.stringify({
-      ...storedLead,
-      ...intakeData,
-      completed_at: new Date().toISOString(),
-    })
-  );
+  await saveLeadRecord("intake", {
+    ...storedLead,
+    ...intakeData,
+  });
 
   bookingLink.href = CONFIG.bookingUrl;
   bookingPanel.classList.remove("hidden");
