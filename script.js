@@ -1,8 +1,8 @@
 const CONFIG = {
   bookingUrl: "https://calendar.app.google/Dy2h9mcBh4KhMZ5eA",
   systemeFormAction: "",
-  supabaseUrl: "",
-  supabaseAnonKey: "",
+  supabaseUrl: "https://nrbrgovhgrrrwhnavszp.supabase.co",
+  supabaseAnonKey: "sb_publishable_bJ_RuYKg4XgORYJXZ3klFA_zLs1BZx9",
   supabaseTable: "diagnostico_orden_leads",
 };
 
