@@ -26,11 +26,11 @@
         </div>
         <div class="header-grid">
           <div>
-            <p class="eyebrow">Diagnostico gratuito</p>
+            <p class="eyebrow">Mini app gratuita</p>
             <h1 id="page-title">Diagnostico de Orden Empresarial</h1>
             <p class="lead">
-              Descubre si tu negocio esta listo para delegar o si todavia
-              depende demasiado de tu memoria, tu WhatsApp y tu presencia diaria.
+              Descubre tu arquetipo operativo, tus brechas principales y el
+              siguiente paso para ordenar tu negocio antes de delegar o escalar.
             </p>
           </div>
           <div class="score-preview" aria-label="Vista previa del resultado">
@@ -73,8 +73,8 @@
           <p class="eyebrow">Resultado listo</p>
           <h2 id="capture-title">Recibe tu diagnostico completo</h2>
           <p>
-            Te mostrare tu nivel de dependencia operativa y la primera accion
-            recomendada para ordenar tu negocio.
+            Te mostrare tu nivel de dependencia operativa, tu arquetipo y la
+            primera accion recomendada para ordenar tu negocio.
           </p>
         </div>
         <form id="leadForm" class="lead-form">
@@ -91,14 +91,63 @@
       </section>
 
       <section class="result-panel hidden" id="resultPanel" aria-labelledby="result-title">
-        <div class="result-main">
-          <p class="eyebrow">Tu resultado</p>
-          <h2 id="result-title"></h2>
-          <p id="resultSummary"></p>
+        <div class="result-hero">
+          <div class="result-main">
+            <p class="eyebrow">Tu resultado</p>
+            <h2 id="result-title"></h2>
+            <p id="resultSummary"></p>
+          </div>
+          <div class="result-score-card" aria-label="Puntaje del diagnostico">
+            <span id="resultScore">0/24</span>
+            <small>Puntaje de orden</small>
+          </div>
         </div>
+
+        <div class="archetype-card">
+          <div>
+            <p class="panel-label">Tu arquetipo operativo</p>
+            <h3 id="archetypeLabel"></h3>
+            <p id="archetypeText"></p>
+          </div>
+          <div>
+            <p class="panel-label">Senal de compra</p>
+            <strong id="buyerSignal"></strong>
+          </div>
+        </div>
+
+        <div class="visual-report">
+          <article class="share-card" id="shareCard" aria-label="Visual descargable del resultado">
+            <div class="share-topline">Kleyi Elimar | Diagnostico de Orden Empresarial</div>
+            <h3 id="shareArchetype"></h3>
+            <p id="shareSubtitle"></p>
+            <div class="share-score"><span id="shareScore"></span><small>Orden actual</small></div>
+            <div class="share-gap">
+              <small>Brecha principal</small>
+              <strong id="shareGap"></strong>
+            </div>
+            <div class="share-next">
+              <small>Siguiente paso</small>
+              <strong id="shareNext"></strong>
+            </div>
+          </article>
+
+          <div class="report-actions">
+            <p class="eyebrow">Visual cool</p>
+            <h3>Guarda una imagen de tu resultado</h3>
+            <p>
+              Este resumen te sirve para recordarlo, compartirlo con tu equipo o
+              traerlo listo a la sesion de diagnostico.
+            </p>
+            <div class="tool-actions">
+              <button class="ghost-button" id="copySummaryBtn" type="button">Copiar resumen</button>
+              <button class="primary-button" id="downloadCardBtn" type="button">Descargar visual</button>
+            </div>
+          </div>
+        </div>
+
         <div class="result-grid">
           <article>
-            <h3>Lo que significa</h3>
+            <h3>Reporte rapido</h3>
             <p id="meaningText"></p>
           </article>
           <article>
@@ -106,7 +155,7 @@
             <p id="nextStepText"></p>
           </article>
           <article>
-            <h3>Que revisar antes de delegar</h3>
+            <h3>Tus brechas principales</h3>
             <ul id="reviewList"></ul>
           </article>
         </div>
