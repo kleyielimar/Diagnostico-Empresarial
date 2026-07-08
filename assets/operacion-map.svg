@@ -1,0 +1,27 @@
+<svg width="360" height="260" viewBox="0 0 360 260" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Mapa de operacion empresarial</title>
+  <desc id="desc">Diagrama abstracto de procesos, seguimiento y delegacion.</desc>
+  <rect x="18" y="28" width="324" height="204" rx="8" fill="#fff"/>
+  <rect x="18" y="28" width="324" height="204" rx="8" stroke="#DDE3DE" stroke-width="2"/>
+  <rect x="45" y="58" width="91" height="52" rx="8" fill="#E9F5F6" stroke="#45625D" stroke-width="2"/>
+  <rect x="134" y="58" width="91" height="52" rx="8" fill="#DDF0F1" stroke="#6AA5A9" stroke-width="2"/>
+  <rect x="223" y="58" width="91" height="52" rx="8" fill="#E9F5F6" stroke="#A3D2D5" stroke-width="2"/>
+  <rect x="75" y="150" width="91" height="52" rx="8" fill="#DDF0F1" stroke="#6AA5A9" stroke-width="2"/>
+  <rect x="194" y="150" width="91" height="52" rx="8" fill="#E9F5F6" stroke="#45625D" stroke-width="2"/>
+  <path d="M91 110V130C91 141 100 150 111 150H120" stroke="#425345" stroke-width="3" stroke-linecap="round"/>
+  <path d="M179 110V130C179 141 170 150 159 150H151" stroke="#425345" stroke-width="3" stroke-linecap="round"/>
+  <path d="M268 110V130C268 141 259 150 248 150H239" stroke="#425345" stroke-width="3" stroke-linecap="round"/>
+  <path d="M166 176H194" stroke="#425345" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="90" cy="84" r="13" fill="#45625D"/>
+  <circle cx="180" cy="84" r="13" fill="#6AA5A9"/>
+  <circle cx="269" cy="84" r="13" fill="#A3D2D5"/>
+  <circle cx="120" cy="176" r="13" fill="#6AA5A9"/>
+  <circle cx="240" cy="176" r="13" fill="#45625D"/>
+  <path d="M82 84H98" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <path d="M172 84H188" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <path d="M261 84H277" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <path d="M112 176H128" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <path d="M232 176H248" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <path d="M90 76V92" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <path d="M240 168V184" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+</svg>
