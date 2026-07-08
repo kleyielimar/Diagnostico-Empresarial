@@ -176,6 +176,31 @@ const intakeForm = document.getElementById("intakeForm");
 const bookingPanel = document.getElementById("bookingPanel");
 const bookingLink = document.getElementById("bookingLink");
 
+function postEmbedHeight() {
+  const height = Math.max(
+    document.body.scrollHeight,
+    document.documentElement.scrollHeight,
+    document.body.offsetHeight,
+    document.documentElement.offsetHeight
+  );
+
+  window.parent.postMessage(
+    {
+      source: "kleyi-diagnostico-orden",
+      height: height + 24,
+    },
+    "*"
+  );
+}
+
+const scheduleEmbedHeight = (() => {
+  let frame = null;
+  return () => {
+    if (frame) cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(postEmbedHeight);
+  };
+})();
+
 function getScore() {
   return answers.reduce((sum, value) => sum + (Number.isInteger(value) ? value : 0), 0);
 }
@@ -223,6 +248,7 @@ function renderQuestion() {
   nextBtn.textContent = currentQuestion === questions.length - 1 ? "Terminar" : "Siguiente";
   nextBtn.disabled = selected === null;
   liveLevel.textContent = getAnsweredCount() < 4 ? "En evaluacion" : getLevel().label;
+  scheduleEmbedHeight();
 }
 
 questionStage.addEventListener("change", (event) => {
@@ -230,6 +256,7 @@ questionStage.addEventListener("change", (event) => {
   answers[currentQuestion] = Number(event.target.value);
   nextBtn.disabled = false;
   liveLevel.textContent = getAnsweredCount() < 4 ? "En evaluacion" : getLevel().label;
+  scheduleEmbedHeight();
 });
 
 prevBtn.addEventListener("click", () => {
@@ -249,6 +276,7 @@ nextBtn.addEventListener("click", () => {
   diagnosticForm.classList.add("hidden");
   capturePanel.classList.remove("hidden");
   capturePanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  scheduleEmbedHeight();
 });
 
 leadForm.addEventListener("submit", async (event) => {
@@ -286,11 +314,13 @@ function renderResult() {
   capturePanel.classList.add("hidden");
   resultPanel.classList.remove("hidden");
   resultPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  scheduleEmbedHeight();
 }
 
 startIntakeBtn.addEventListener("click", () => {
   intakePanel.classList.remove("hidden");
   intakePanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  scheduleEmbedHeight();
 });
 
 intakeForm.addEventListener("submit", (event) => {
@@ -311,6 +341,15 @@ intakeForm.addEventListener("submit", (event) => {
   bookingLink.href = CONFIG.bookingUrl;
   bookingPanel.classList.remove("hidden");
   bookingPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  scheduleEmbedHeight();
 });
 
+window.addEventListener("load", scheduleEmbedHeight);
+window.addEventListener("resize", scheduleEmbedHeight);
+
+if (window.ResizeObserver) {
+  new ResizeObserver(scheduleEmbedHeight).observe(document.body);
+}
+
 renderQuestion();
+scheduleEmbedHeight();
