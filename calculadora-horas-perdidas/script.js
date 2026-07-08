@@ -1,5 +1,8 @@
 const CONFIG = {
   diagnosticUrl: "https://info.kleyielimar.com/diagnostico-empresarial",
+  supabaseUrl: "",
+  supabaseAnonKey: "",
+  supabaseTable: "calculadora_horas_leads",
 };
 
 const calculatorForm = document.getElementById("calculatorForm");
@@ -68,7 +71,7 @@ function getLevel(monthlyHours) {
     return {
       title: "Tu negocio tiene desorden silencioso",
       label: "Desorden silencioso",
-      line: "El caos no siempre se ve como emergencia. A veces aparece como pequeñas fugas semanales que te quitan enfoque.",
+      line: "El caos no siempre se ve como emergencia. A veces aparece como pequenas fugas semanales que te quitan enfoque.",
       fix: "Centraliza informacion y define una ruta simple para seguimiento de clientes y prospectos.",
       next: "El diagnostico completo te ayudara a saber que ordenar primero antes de contratar o automatizar.",
     };
@@ -140,6 +143,56 @@ function calculate(data) {
   };
 }
 
+async function saveLeadRecord(lead) {
+  const result = lead.result;
+  const payload = {
+    first_name: lead.first_name,
+    email: lead.email,
+    level: result.level.label,
+    level_title: result.level.title,
+    main_leak: result.mainLeak,
+    weekly_hours: result.weeklyHours,
+    monthly_hours: result.monthlyHours,
+    search_hours: result.search_hours,
+    followup_hours: result.followup_hours,
+    repeat_hours: result.repeat_hours,
+    rework_hours: result.rework_hours,
+    missed_leads: result.missed_leads,
+    hour_value: result.hour_value,
+    client_value: result.client_value,
+    close_rate: result.close_rate,
+    time_cost: result.timeCost,
+    opportunity_cost: result.opportunityCost,
+    monthly_impact: result.monthlyImpact,
+    annual_impact: result.annualImpact,
+    completed_at: lead.completed_at,
+    payload: result,
+  };
+
+  window.localStorage.setItem("calculadoraHorasLead", JSON.stringify(lead));
+
+  if (!CONFIG.supabaseUrl || !CONFIG.supabaseAnonKey) {
+    return payload;
+  }
+
+  try {
+    await fetch(`${CONFIG.supabaseUrl}/rest/v1/${CONFIG.supabaseTable}`, {
+      method: "POST",
+      headers: {
+        apikey: CONFIG.supabaseAnonKey,
+        Authorization: `Bearer ${CONFIG.supabaseAnonKey}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify(payload),
+    });
+  } catch (error) {
+    console.warn("Supabase lead save skipped", error);
+  }
+
+  return payload;
+}
+
 calculatorForm.addEventListener("submit", (event) => {
   event.preventDefault();
   latestResult = calculate(new FormData(calculatorForm));
@@ -149,7 +202,7 @@ calculatorForm.addEventListener("submit", (event) => {
   scheduleEmbedHeight();
 });
 
-leadForm.addEventListener("submit", (event) => {
+leadForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!latestResult) latestResult = calculate(new FormData(calculatorForm));
 
@@ -160,7 +213,7 @@ leadForm.addEventListener("submit", (event) => {
     completed_at: new Date().toISOString(),
   };
 
-  window.localStorage.setItem("calculadoraHorasLead", JSON.stringify(lead));
+  await saveLeadRecord(lead);
   renderResult();
 });
 
