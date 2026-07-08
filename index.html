@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Diagnostico de Orden Empresarial | Kleyi Elimar</title>
+    <meta
+      name="description"
+      content="Diagnostico rapido para descubrir si tu negocio esta listo para delegar o si todavia depende demasiado de ti."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="tool-header" aria-labelledby="page-title">
+        <div class="brand-lockup">
+          <img
+            class="brand-mark"
+            src="assets/kleyi-icon.svg"
+            alt=""
+            aria-hidden="true"
+            width="44"
+            height="44"
+          />
+          <span>Kleyi Elimar</span>
+        </div>
+        <div class="header-grid">
+          <div>
+            <p class="eyebrow">Diagnostico gratuito</p>
+            <h1 id="page-title">Diagnostico de Orden Empresarial</h1>
+            <p class="lead">
+              Descubre si tu negocio esta listo para delegar o si todavia
+              depende demasiado de tu memoria, tu WhatsApp y tu presencia diaria.
+            </p>
+          </div>
+          <div class="score-preview" aria-label="Vista previa del resultado">
+            <img
+              src="assets/operacion-map.svg"
+              alt="Mapa visual de operacion empresarial"
+              width="360"
+              height="260"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section class="diagnostic-layout" aria-live="polite">
+        <aside class="progress-panel">
+          <div>
+            <p class="panel-label">Progreso</p>
+            <strong id="progressText">Pregunta 1 de 12</strong>
+          </div>
+          <div class="progress-track" aria-hidden="true">
+            <span id="progressBar"></span>
+          </div>
+          <div class="mini-result">
+            <p class="panel-label">Tu nivel actual</p>
+            <strong id="liveLevel">En evaluacion</strong>
+          </div>
+        </aside>
+
+        <form id="diagnosticForm" class="question-card">
+          <div id="questionStage"></div>
+          <div class="actions">
+            <button class="ghost-button" id="prevBtn" type="button">Anterior</button>
+            <button class="primary-button" id="nextBtn" type="button">Siguiente</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="capture-panel hidden" id="capturePanel" aria-labelledby="capture-title">
+        <div>
+          <p class="eyebrow">Resultado listo</p>
+          <h2 id="capture-title">Recibe tu diagnostico completo</h2>
+          <p>
+            Te mostrare tu nivel de dependencia operativa y la primera accion
+            recomendada para ordenar tu negocio.
+          </p>
+        </div>
+        <form id="leadForm" class="lead-form">
+          <label>
+            Nombre
+            <input id="leadName" name="first_name" autocomplete="given-name" required />
+          </label>
+          <label>
+            Correo electronico
+            <input id="leadEmail" name="email" type="email" autocomplete="email" required />
+          </label>
+          <button class="primary-button" type="submit">Ver mi resultado</button>
+        </form>
+      </section>
+
+      <section class="result-panel hidden" id="resultPanel" aria-labelledby="result-title">
+        <div class="result-main">
+          <p class="eyebrow">Tu resultado</p>
+          <h2 id="result-title"></h2>
+          <p id="resultSummary"></p>
+        </div>
+        <div class="result-grid">
+          <article>
+            <h3>Lo que significa</h3>
+            <p id="meaningText"></p>
+          </article>
+          <article>
+            <h3>Primer paso recomendado</h3>
+            <p id="nextStepText"></p>
+          </article>
+          <article>
+            <h3>Que revisar antes de delegar</h3>
+            <ul id="reviewList"></ul>
+          </article>
+        </div>
+        <div class="cta-band">
+          <div>
+            <h3>Si tu negocio ya vende, el orden no es lujo. Es capacidad.</h3>
+            <p>
+              Antes de mostrarte la agenda, necesito entender un poco tu negocio.
+              Completa este paso breve para que la llamada empiece con contexto,
+              no desde cero.
+            </p>
+          </div>
+          <button class="primary-button" id="startIntakeBtn" type="button">
+            Completar paso previo
+          </button>
+        </div>
+      </section>
+
+      <section class="intake-panel hidden" id="intakePanel" aria-labelledby="intake-title">
+        <div class="intake-intro">
+          <p class="eyebrow">Antes de agendar</p>
+          <h2 id="intake-title">Cuéntame qué está pasando en tu negocio</h2>
+          <p>
+            Estas respuestas ayudan a saber si el diagnóstico es el siguiente
+            paso correcto y qué revisar primero en la llamada.
+          </p>
+        </div>
+
+        <form id="intakeForm" class="intake-form">
+          <label>
+            ¿Qué tipo de negocio tienes?
+            <input name="business_type" required placeholder="Ej. consultoría, limpieza, coaching, remodelación..." />
+          </label>
+
+          <label>
+            ¿Cuánto factura tu negocio al mes aproximadamente?
+            <select name="revenue_range" required>
+              <option value="">Selecciona una opción</option>
+              <option>Menos de $3,000</option>
+              <option>$3,000 a $5,000</option>
+              <option>$5,000 a $10,000</option>
+              <option>$10,000 a $30,000</option>
+              <option>Más de $30,000</option>
+            </select>
+          </label>
+
+          <label>
+            ¿Cuál es el mayor desorden que hoy te está costando tiempo, dinero o energía?
+            <textarea name="main_problem" rows="4" required></textarea>
+          </label>
+
+          <label>
+            ¿Qué intentaste delegar, ordenar o automatizar y no funcionó como esperabas?
+            <textarea name="attempted_fix" rows="4" required></textarea>
+          </label>
+
+          <label>
+            ¿Qué te gustaría que funcione mejor después de ordenar tu operación?
+            <textarea name="desired_outcome" rows="4" required></textarea>
+          </label>
+
+          <label>
+            ¿Tienes equipo, asistente o colaboradores actualmente?
+            <select name="team_status" required>
+              <option value="">Selecciona una opción</option>
+              <option>No, hago casi todo sola/o</option>
+              <option>Sí, tengo ayuda ocasional</option>
+              <option>Sí, tengo asistente o equipo pequeño</option>
+              <option>Sí, tengo equipo pero falta estructura</option>
+            </select>
+          </label>
+
+          <button class="primary-button" type="submit">Desbloquear agenda</button>
+        </form>
+      </section>
+
+      <section class="booking-panel hidden" id="bookingPanel" aria-labelledby="booking-title">
+        <div>
+          <p class="eyebrow">Agenda desbloqueada</p>
+          <h2 id="booking-title">Ahora sí, agenda tu diagnóstico</h2>
+          <p>
+            Gracias por completar el paso previo. Ya tienes claridad inicial y
+            yo tendré más contexto para revisar tu operación con criterio.
+          </p>
+        </div>
+        <a class="primary-button link-button" id="bookingLink" href="#" target="_blank" rel="noopener">
+          Abrir agenda
+        </a>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
