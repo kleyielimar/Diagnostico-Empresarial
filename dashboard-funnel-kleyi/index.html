@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard Vivo | Funnel de Recursos Kleyi Elimar</title>
+    <meta
+      name="description"
+      content="Dashboard vivo del funnel de recursos de Kleyi Elimar conectado a Supabase."
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-lockup">
+          <img src="./assets/kleyi-icon.svg" alt="" class="brand-mark" />
+          <div>
+            <p class="eyebrow">Kleyi Elimar</p>
+            <h1>Panel vivo del funnel de recursos</h1>
+          </div>
+        </div>
+        <div class="status-pill" id="connectionStatus">
+          <span class="status-dot"></span>
+          Conectando con Supabase
+        </div>
+      </header>
+
+      <main>
+        <section class="intro-grid" aria-labelledby="dashboard-title">
+          <div>
+            <p class="section-kicker">Dashboard de certificacion</p>
+            <h2 id="dashboard-title">De recurso gratuito a diagnostico: lo que esta pasando en vivo.</h2>
+            <p class="intro-copy">
+              Este panel muestra como se mueve el funnel que construimos en el reto:
+              personas que entran por la calculadora, senales de dolor operativo y avance
+              hacia el Diagnostico de Orden Empresarial.
+            </p>
+          </div>
+          <div class="refresh-panel">
+            <p>Fuente conectada</p>
+            <strong>Supabase</strong>
+            <span id="lastUpdated">Aun sin actualizar</span>
+            <button type="button" id="refreshButton">Actualizar ahora</button>
+          </div>
+        </section>
+
+        <section class="kpi-grid" aria-label="Metricas principales">
+          <article class="kpi-card">
+            <span class="kpi-label">Leads capturados</span>
+            <strong id="totalLeads">0</strong>
+            <small>Calculadora + diagnostico</small>
+          </article>
+          <article class="kpi-card accent">
+            <span class="kpi-label">Ultimos 7 dias</span>
+            <strong id="recentLeads">0</strong>
+            <small>Movimiento reciente del funnel</small>
+          </article>
+          <article class="kpi-card">
+            <span class="kpi-label">Horas detectadas</span>
+            <strong id="weeklyHours">0h</strong>
+            <small>Perdida operativa semanal</small>
+          </article>
+          <article class="kpi-card">
+            <span class="kpi-label">Fuga estimada</span>
+            <strong id="monthlyCost">$0</strong>
+            <small>Costo mensual aproximado</small>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <article class="panel wide">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">Embudo</p>
+                <h3>Ruta del recurso al siguiente paso</h3>
+              </div>
+              <span class="panel-note" id="conversionRate">0% avanza al diagnostico</span>
+            </div>
+            <div class="funnel" id="funnelChart" aria-label="Embudo del funnel"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">Dolor operativo</p>
+                <h3>Que esta costando mas</h3>
+              </div>
+            </div>
+            <div class="signal-list" id="painSignals"></div>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">Tendencia</p>
+                <h3>Registros por dia</h3>
+              </div>
+              <span class="panel-note">Ultimos 14 dias</span>
+            </div>
+            <div class="bar-chart" id="dailyChart" aria-label="Registros diarios"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">Diagnostico</p>
+                <h3>Niveles de orden detectados</h3>
+              </div>
+            </div>
+            <div class="level-chart" id="levelChart"></div>
+          </article>
+        </section>
+
+        <section class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="section-kicker">Lectura ejecutiva</p>
+              <h3>Lo que el dashboard nos esta diciendo</h3>
+            </div>
+          </div>
+          <div class="insight-grid">
+            <div>
+              <span>Senal 1</span>
+              <p id="insightOne">Esperando datos reales del funnel.</p>
+            </div>
+            <div>
+              <span>Senal 2</span>
+              <p id="insightTwo">El panel se actualiza automaticamente con cada lectura.</p>
+            </div>
+            <div>
+              <span>Siguiente accion</span>
+              <p id="insightThree">Revisar que las personas con mayor dolor operativo reciban la secuencia correcta.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="section-kicker">Actividad reciente</p>
+              <h3>Ultimos registros visibles</h3>
+            </div>
+            <span class="panel-note">Datos privados protegidos</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Fuente</th>
+                  <th>Contacto</th>
+                  <th>Resultado</th>
+                  <th>Senal principal</th>
+                </tr>
+              </thead>
+              <tbody id="recentTable">
+                <tr>
+                  <td colspan="5">Cargando datos...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js" defer></script>
+  </body>
+</html>
