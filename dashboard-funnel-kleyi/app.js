@@ -34,6 +34,40 @@ async function fetchTable(table) {
   return response.json();
 }
 
+async function fetchPublicDashboardRows() {
+  const endpoint = `${SUPABASE_URL}/rest/v1/rpc/dashboard_funnel_public_rows`;
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: "{}",
+  });
+
+  if (!response.ok) {
+    const details = await response.text();
+    throw new Error(`dashboard_funnel_public_rows: ${response.status} ${details}`);
+  }
+
+  const rows = await response.json();
+  if (!Array.isArray(rows)) return [];
+
+  return rows.map((row) => ({
+    ...row,
+    _source: row.source || "Fuente",
+    _stage: row.stage || row.source || "Registro",
+    _date: getDate(row),
+    _email: "",
+    _name: row.contact_label || "",
+    _weeklyHours: getNumeric(row, ["weekly_hours"]),
+    _monthlyCost: getNumeric(row, ["monthly_cost"]),
+    _level: row.level || "Sin clasificar",
+    _signal: row.signal || "Registro recibido",
+  }));
+}
+
 function getFirstValue(record, keys) {
   for (const key of keys) {
     if (record && record[key] !== undefined && record[key] !== null && record[key] !== "") {
@@ -408,13 +442,20 @@ async function refreshDashboard() {
   setConnectionState("loading", "Consultando Supabase");
 
   try {
-    const rawBySource = await Promise.all(
-      SOURCES.map(async (source) => ({
-        source,
-        rows: await fetchTable(source.table),
-      }))
-    );
-    const rows = normalizeRows(rawBySource);
+    let rows;
+    try {
+      rows = await fetchPublicDashboardRows();
+    } catch (safeViewError) {
+      console.info("Usando lectura directa porque el resumen publico aun no existe.", safeViewError);
+      const rawBySource = await Promise.all(
+        SOURCES.map(async (source) => ({
+          source,
+          rows: await fetchTable(source.table),
+        }))
+      );
+      rows = normalizeRows(rawBySource);
+    }
+
     renderDashboard(rows);
     $("lastUpdated").textContent = `Actualizado ${new Intl.DateTimeFormat("es-US", {
       hour: "numeric",
