@@ -16,6 +16,9 @@ const SOURCES = [
 ];
 
 const $ = (id) => document.getElementById(id);
+let dashboardRows = [];
+let sortField = "date";
+let sortDirection = "desc";
 
 async function fetchTable(table) {
   const endpoint = `${SUPABASE_URL}/rest/v1/${table}?select=*&order=created_at.desc&limit=1000`;
@@ -227,6 +230,60 @@ function countRecent(rows, days = 7) {
   return rows.filter((row) => row._date >= cutoff).length;
 }
 
+function filterRows(rows) {
+  const source = $("sourceFilter")?.value || "all";
+  const range = $("rangeFilter")?.value || "all";
+  const cutoff = new Date();
+
+  if (range !== "all") {
+    cutoff.setDate(cutoff.getDate() - Number(range));
+    cutoff.setHours(0, 0, 0, 0);
+  }
+
+  return rows.filter((row) => {
+    const matchesSource = source === "all" || row._source === source;
+    const matchesRange = range === "all" || row._date >= cutoff;
+    return matchesSource && matchesRange;
+  });
+}
+
+function getSortValue(row, field) {
+  const values = {
+    date: row._date?.getTime?.() || 0,
+    source: row._source || "",
+    contact: row._name || row._email || "",
+    level: row._level || "",
+    signal: row._signal || "",
+  };
+  return values[field] ?? "";
+}
+
+function sortRows(rows) {
+  return [...rows].sort((a, b) => {
+    const first = getSortValue(a, sortField);
+    const second = getSortValue(b, sortField);
+    const direction = sortDirection === "asc" ? 1 : -1;
+
+    if (typeof first === "number" && typeof second === "number") {
+      return (first - second) * direction;
+    }
+
+    return String(first).localeCompare(String(second), "es", { sensitivity: "base" }) * direction;
+  });
+}
+
+function updateSortHeaders() {
+  document.querySelectorAll("th[data-sort]").forEach((header) => {
+    const isActive = header.dataset.sort === sortField;
+    header.classList.toggle("is-sorted", isActive);
+    header.classList.toggle("is-asc", isActive && sortDirection === "asc");
+  });
+}
+
+function applyFilters() {
+  renderDashboard(filterRows(dashboardRows));
+}
+
 function setConnectionState(type, message) {
   const status = $("connectionStatus");
   status.classList.toggle("is-live", type === "live");
@@ -400,7 +457,8 @@ function renderInsights(rows, calculatorRows, diagnosticRows) {
 }
 
 function renderTable(rows) {
-  const recentRows = [...rows].sort((a, b) => b._date - a._date).slice(0, 10);
+  updateSortHeaders();
+  const recentRows = sortRows(rows).slice(0, 10);
 
   if (!recentRows.length) {
     $("recentTable").innerHTML = `
@@ -456,7 +514,8 @@ async function refreshDashboard() {
       rows = normalizeRows(rawBySource);
     }
 
-    renderDashboard(rows);
+    dashboardRows = rows;
+    applyFilters();
     $("lastUpdated").textContent = `Actualizado ${new Intl.DateTimeFormat("es-US", {
       hour: "numeric",
       minute: "2-digit",
@@ -477,5 +536,26 @@ async function refreshDashboard() {
 }
 
 $("refreshButton").addEventListener("click", refreshDashboard);
+$("sourceFilter")?.addEventListener("change", applyFilters);
+$("rangeFilter")?.addEventListener("change", applyFilters);
+$("resetFilters")?.addEventListener("click", () => {
+  $("sourceFilter").value = "all";
+  $("rangeFilter").value = "all";
+  applyFilters();
+});
+
+document.querySelectorAll("th[data-sort]").forEach((header) => {
+  header.addEventListener("click", () => {
+    const nextField = header.dataset.sort;
+    if (sortField === nextField) {
+      sortDirection = sortDirection === "asc" ? "desc" : "asc";
+    } else {
+      sortField = nextField;
+      sortDirection = nextField === "date" ? "desc" : "asc";
+    }
+    applyFilters();
+  });
+});
+
 refreshDashboard();
 window.setInterval(refreshDashboard, REFRESH_MS);
