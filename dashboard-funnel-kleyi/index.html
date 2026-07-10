@@ -45,6 +45,27 @@
           </div>
         </section>
 
+        <section class="filter-panel" aria-label="Filtros del dashboard">
+          <div class="filter-group">
+            <label for="sourceFilter">Fuente</label>
+            <select id="sourceFilter">
+              <option value="all">Todo el funnel</option>
+              <option value="Calculadora">Calculadora</option>
+              <option value="Diagnostico">Diagnostico</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="rangeFilter">Rango</label>
+            <select id="rangeFilter">
+              <option value="all">Todo el historial</option>
+              <option value="7">Ultimos 7 dias</option>
+              <option value="14">Ultimos 14 dias</option>
+              <option value="30">Ultimos 30 dias</option>
+            </select>
+          </div>
+          <button type="button" id="resetFilters">Limpiar filtros</button>
+        </section>
+
         <section class="kpi-grid" aria-label="Metricas principales">
           <article class="kpi-card">
             <span class="kpi-label">Leads capturados</span>
@@ -149,11 +170,11 @@
             <table>
               <thead>
                 <tr>
-                  <th>Fecha</th>
-                  <th>Fuente</th>
-                  <th>Contacto</th>
-                  <th>Resultado</th>
-                  <th>Senal principal</th>
+                  <th data-sort="date">Fecha</th>
+                  <th data-sort="source">Fuente</th>
+                  <th data-sort="contact">Contacto</th>
+                  <th data-sort="level">Resultado</th>
+                  <th data-sort="signal">Senal principal</th>
                 </tr>
               </thead>
               <tbody id="recentTable">
