@@ -86,7 +86,12 @@
             Correo electronico
             <input id="leadEmail" name="email" type="email" autocomplete="email" required />
           </label>
+          <label style="display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:1.6">
+            <input type="checkbox" name="newsletter_consent" required style="width:auto;margin-top:6px" />
+            <span>Quiero ver mi resultado y suscribirme a «Lunes de Boost para tu negocio», el newsletter de Kleyi Elimar con ideas y recursos para ordenar mi negocio e información sobre sus servicios. Puedo darme de baja desde cualquier correo.</span>
+          </label>
           <button class="primary-button" type="submit">Ver mi resultado</button>
+          <p id="registrationStatus" role="status" aria-live="polite" style="font-size:14px;line-height:1.6"></p>
         </form>
       </section>
 
@@ -110,7 +115,7 @@
             <p id="archetypeText"></p>
           </div>
           <div>
-            <p class="panel-label">Senal de compra</p>
+            <p class="panel-label">Prioridad para avanzar</p>
             <strong id="buyerSignal"></strong>
           </div>
         </div>
@@ -132,7 +137,7 @@
           </article>
 
           <div class="report-actions">
-            <p class="eyebrow">Visual cool</p>
+            <p class="eyebrow">Tu resumen descargable</p>
             <h3>Guarda una imagen de tu resultado</h3>
             <p>
               Este resumen te sirve para recordarlo, compartirlo con tu equipo o
@@ -250,3 +255,4 @@
     <script src="script.js"></script>
   </body>
 </html>
+
