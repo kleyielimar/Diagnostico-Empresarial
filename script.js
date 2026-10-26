@@ -1,6 +1,6 @@
 const CONFIG = {
   bookingUrl: "https://calendar.app.google/Dy2h9mcBh4KhMZ5eA",
-  systemeFormAction: "",
+  systemeFormAction: "https://systeme.io/embedded/46105223/subscription",
   supabaseUrl: "https://nrbrgovhgrrrwhnavszp.supabase.co",
   supabaseAnonKey: "sb_publishable_bJ_RuYKg4XgORYJXZ3klFA_zLs1BZx9",
   supabaseTable: "diagnostico_orden_leads",
@@ -348,21 +348,76 @@ nextBtn.addEventListener("click", () => {
   scheduleEmbedHeight();
 });
 
+// Use the official embedded form, with a confirmed redirect rather than an opaque fetch.
+function registerWithSysteme() {
+  return new Promise((resolve, reject) => {
+    const nonce = crypto.randomUUID();
+    const frame = document.createElement("iframe");
+    frame.name = `systeme-registration-${nonce}`;
+    frame.hidden = true;
+    frame.title = "Confirmación del registro";
+    const form = document.createElement("form");
+    form.method = "post";
+    form.action = CONFIG.systemeFormAction;
+    form.target = frame.name;
+    form.hidden = true;
+    const fields = {
+      email: document.getElementById("leadEmail").value.trim(),
+      first_name: document.getElementById("leadName").value.trim(),
+    };
+    for (const [name, value] of Object.entries(fields)) {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = name;
+      input.value = value;
+      form.append(input);
+    }
+    document.body.append(frame, form);
+    let timer;
+    function cleanup() {
+      window.removeEventListener("message", onMessage);
+      clearTimeout(timer);
+      form.remove();
+      frame.remove();
+    }
+    function onMessage(event) {
+      if (event.origin !== location.origin || event.source !== frame.contentWindow) return;
+      if (event.data?.type !== "systeme-registration-confirmed") return;
+      cleanup();
+      resolve();
+    }
+    window.addEventListener("message", onMessage);
+    timer = setTimeout(() => {
+      cleanup();
+      reject(new Error("No pudimos confirmar tu registro. Tus respuestas siguen aquí. Revisa tu conexión e inténtalo de nuevo."));
+    }, 45000);
+    form.submit();
+  });
+}
+
 leadForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-
-  const payload = getLeadPayload("lead");
-
-  if (CONFIG.systemeFormAction) {
-    await fetch(CONFIG.systemeFormAction, {
-      method: "POST",
-      mode: "no-cors",
-      body: new FormData(leadForm),
-    }).catch(() => null);
+  if (!leadForm.reportValidity()) return;
+  const button = leadForm.querySelector('button[type="submit"]');
+  const status = document.getElementById("registrationStatus");
+  if (button.disabled) return;
+  button.disabled = true;
+  button.textContent = "Registrando…";
+  status.textContent = "Estamos confirmando tu registro. Conservaremos tus respuestas en esta página.";
+  scheduleEmbedHeight();
+  try {
+    await registerWithSysteme();
+    const payload = getLeadPayload("lead");
+    await saveLeadRecord("lead", payload);
+    status.textContent = "Registro confirmado.";
+    renderResult();
+  } catch (error) {
+    status.textContent = error.message || "No pudimos confirmar el registro. Inténtalo de nuevo.";
+  } finally {
+    button.disabled = false;
+    button.textContent = "Ver mi resultado";
+    scheduleEmbedHeight();
   }
-
-  await saveLeadRecord("lead", payload);
-  renderResult();
 });
 
 function renderResult() {
@@ -547,3 +602,4 @@ if (window.ResizeObserver) {
 
 renderQuestion();
 scheduleEmbedHeight();
+
