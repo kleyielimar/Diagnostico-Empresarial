@@ -585,39 +585,20 @@ intakeForm.addEventListener("submit", async (event) => {
   const status = document.getElementById("intakeStatus");
   const data = Object.fromEntries(new FormData(intakeForm).entries());
   const lead = getLeadPayload("intake");
-  const summary = [
-    "Nombre: " + lead.first_name,
-    "Correo: " + lead.email,
-    "Fecha de envío: " + new Date().toISOString(),
-    "Puntuación: " + lead.score + "/24",
-    "Perfil: " + lead.archetype,
-    "",
-    "1. ¿Qué tipo de negocio tienes?",
-    data.business_type,
-    "",
-    "2. ¿Cuánto factura tu negocio al mes aproximadamente?",
-    data.revenue_range,
-    "",
-    "3. ¿Cuál es el mayor desorden que hoy te está costando tiempo, dinero o energía?",
-    data.main_problem,
-    "",
-    "4. ¿Qué intentaste delegar, ordenar o automatizar y no funcionó como esperabas?",
-    data.attempted_fix,
-    "",
-    "5. ¿Qué te gustaría que funcione mejor después de ordenar tu operación?",
-    data.desired_outcome,
-    "",
-    "6. ¿Tienes equipo, asistente o colaboradores actualmente?",
-    data.team_status,
-    "",
-    "Sesión solicitada: diagnóstico en vivo de 30 minutos. Reserva aún pendiente."
-  ].join("\n");
+  const values = [data.business_type, data.revenue_range, data.main_problem, data.attempted_fix, data.desired_outcome, data.team_status];
+  if (values.some(value => !value || value.length > 255) || lead.first_name.length > 100) {
+    status.textContent = "Escribe respuestas de hasta 255 caracteres y un nombre de hasta 100 caracteres.";
+    return;
+  }
+  const summary = ["Nombre: " + lead.first_name, "Puntuación: " + lead.score + "/24", "Perfil: " + lead.archetype, "Enviado: " + new Date().toISOString()].join("\n");
+  const fields = {diagnostico_ficha: summary};
+  values.forEach((value, index) => { fields["diagnostico_r" + (index + 1)] = value; });
   button.disabled = true;
   button.textContent = "Enviando tus respuestas…";
   status.textContent = "Estamos guardando tu ficha para preparar la sesión.";
   scheduleEmbedHeight();
   try {
-    await registerWithSysteme("https://systeme.io/embedded/46115937/subscription", {diagnostico_ficha: summary});
+    await registerWithSysteme("https://systeme.io/embedded/46115937/subscription", fields);
     localStorage.setItem("diagnosticoOrdenIntake", JSON.stringify({...lead, ...data}));
     status.textContent = "Ficha recibida. Ahora puedes elegir una hora disponible para tu sesión de 30 minutos.";
     bookingLink.href = CONFIG.bookingUrl;
