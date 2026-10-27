@@ -8,7 +8,7 @@
       name="description"
       content="Diagnostico rapido para descubrir si tu negocio esta listo para delegar o si todavia depende demasiado de ti."
     />
-    <link rel="stylesheet" href="styles.css?v=ficha30" />
+    <link rel="stylesheet" href="styles.css?v=ficha30-separada" />
   </head>
   <body>
     <main class="shell">
@@ -80,7 +80,7 @@
         <form id="leadForm" class="lead-form">
           <label>
             Nombre
-            <input id="leadName" name="first_name" autocomplete="given-name" required />
+            <input id="leadName" maxlength="100" name="first_name" autocomplete="given-name" required />
           </label>
           <label>
             Correo electronico
@@ -194,7 +194,7 @@
           <p class="eyebrow">Antes de agendar</p>
           <h2 id="intake-title">Cuéntame qué está pasando en tu negocio</h2>
           <p>
-            Estas respuestas ayudan a saber si el diagnóstico es el siguiente
+            Responde de forma breve (máximo 255 caracteres por respuesta). Estas respuestas ayudan a saber si el diagnóstico es el siguiente
             paso correcto y qué revisar primero en la llamada.
           </p>
         </div>
@@ -202,7 +202,7 @@
         <form id="intakeForm" class="intake-form">
           <label>
             ¿Qué tipo de negocio tienes?
-            <input name="business_type" required placeholder="Ej. consultoría, limpieza, coaching, remodelación..." />
+            <input name="business_type" maxlength="255" required placeholder="Ej. consultoría, limpieza, coaching, remodelación..." />
           </label>
 
           <label>
@@ -219,17 +219,17 @@
 
           <label>
             ¿Cuál es el mayor desorden que hoy te está costando tiempo, dinero o energía?
-            <textarea name="main_problem" rows="4" required></textarea>
+            <textarea name="main_problem" rows="4" maxlength="255" required></textarea>
           </label>
 
           <label>
             ¿Qué intentaste delegar, ordenar o automatizar y no funcionó como esperabas?
-            <textarea name="attempted_fix" rows="4" required></textarea>
+            <textarea name="attempted_fix" rows="4" maxlength="255" required></textarea>
           </label>
 
           <label>
             ¿Qué te gustaría que funcione mejor después de ordenar tu operación?
-            <textarea name="desired_outcome" rows="4" required></textarea>
+            <textarea name="desired_outcome" rows="4" maxlength="255" required></textarea>
           </label>
 
           <label>
@@ -262,7 +262,7 @@
       </section>
     </main>
 
-    <script src="script.js?v=ficha30"></script>
+    <script src="script.js?v=ficha30-separada"></script>
   </body>
 </html>
 
