@@ -349,7 +349,7 @@ nextBtn.addEventListener("click", () => {
 });
 
 // Use the official embedded form, with a confirmed redirect rather than an opaque fetch.
-function registerWithSysteme() {
+function registerWithSysteme(action = CONFIG.systemeFormAction, extraFields = {}) {
   return new Promise((resolve, reject) => {
     const nonce = crypto.randomUUID();
     const frame = document.createElement("iframe");
@@ -358,12 +358,13 @@ function registerWithSysteme() {
     frame.title = "Confirmación del registro";
     const form = document.createElement("form");
     form.method = "post";
-    form.action = CONFIG.systemeFormAction;
+    form.action = action;
     form.target = frame.name;
     form.hidden = true;
     const fields = {
       email: document.getElementById("leadEmail").value.trim(),
       first_name: document.getElementById("leadName").value.trim(),
+      ...extraFields,
     };
     for (const [name, value] of Object.entries(fields)) {
       const input = document.createElement("input");
@@ -578,19 +579,57 @@ startIntakeBtn.addEventListener("click", () => {
 
 intakeForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-
-  const intakeData = Object.fromEntries(new FormData(intakeForm).entries());
-  const storedLead = JSON.parse(window.localStorage.getItem("diagnosticoOrdenLead") || "{}");
-
-  await saveLeadRecord("intake", {
-    ...storedLead,
-    ...intakeData,
-  });
-
-  bookingLink.href = CONFIG.bookingUrl;
-  bookingPanel.classList.remove("hidden");
-  bookingPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (!intakeForm.reportValidity()) return;
+  const button = intakeForm.querySelector('button[type="submit"]');
+  if (button.disabled) return;
+  const status = document.getElementById("intakeStatus");
+  const data = Object.fromEntries(new FormData(intakeForm).entries());
+  const lead = getLeadPayload("intake");
+  const summary = [
+    "Nombre: " + lead.first_name,
+    "Correo: " + lead.email,
+    "Fecha de envío: " + new Date().toISOString(),
+    "Puntuación: " + lead.score + "/24",
+    "Perfil: " + lead.archetype,
+    "",
+    "1. ¿Qué tipo de negocio tienes?",
+    data.business_type,
+    "",
+    "2. ¿Cuánto factura tu negocio al mes aproximadamente?",
+    data.revenue_range,
+    "",
+    "3. ¿Cuál es el mayor desorden que hoy te está costando tiempo, dinero o energía?",
+    data.main_problem,
+    "",
+    "4. ¿Qué intentaste delegar, ordenar o automatizar y no funcionó como esperabas?",
+    data.attempted_fix,
+    "",
+    "5. ¿Qué te gustaría que funcione mejor después de ordenar tu operación?",
+    data.desired_outcome,
+    "",
+    "6. ¿Tienes equipo, asistente o colaboradores actualmente?",
+    data.team_status,
+    "",
+    "Sesión solicitada: diagnóstico en vivo de 30 minutos. Reserva aún pendiente."
+  ].join("\n");
+  button.disabled = true;
+  button.textContent = "Enviando tus respuestas…";
+  status.textContent = "Estamos guardando tu ficha para preparar la sesión.";
   scheduleEmbedHeight();
+  try {
+    await registerWithSysteme("https://systeme.io/embedded/46115937/subscription", {diagnostico_ficha: summary});
+    localStorage.setItem("diagnosticoOrdenIntake", JSON.stringify({...lead, ...data}));
+    status.textContent = "Ficha recibida. Ahora puedes elegir una hora disponible para tu sesión de 30 minutos.";
+    bookingLink.href = CONFIG.bookingUrl;
+    bookingPanel.classList.remove("hidden");
+    bookingPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  } catch (error) {
+    status.textContent = "No pudimos confirmar el envío de tu ficha. Tus respuestas siguen aquí. Revisa tu conexión y vuelve a intentarlo.";
+  } finally {
+    button.disabled = false;
+    button.textContent = "Enviar respuestas y ver agenda";
+    scheduleEmbedHeight();
+  }
 });
 
 window.addEventListener("load", scheduleEmbedHeight);
