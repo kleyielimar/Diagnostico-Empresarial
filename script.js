@@ -7,10 +7,10 @@ const CONFIG = {
   // Nombres de campos personalizados en Systeme para el formulario principal.
   // Deja un valor vacío ("") para no enviar ese dato a Systeme.
   systemeLeadFields: {
-    revenue: "",
-    archetype: "",
-    score: "",
-    mainGap: "",
+    revenue: "diagnostico_facturacion",
+    archetype: "diagnostico_arquetipo",
+    score: "diagnostico_puntaje",
+    mainGap: "diagnostico_brecha",
   },
 };
 
