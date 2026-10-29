@@ -6,9 +6,9 @@
     <title>Diagnóstico de Orden Empresarial | Kleyi Elimar</title>
     <meta
       name="description"
-      content="Diagnóstico rapido para descubrir si tu negocio esta listo para delegar o si todavía depende demasiado de ti."
+      content="Diagnóstico rápido para descubrir si tu negocio está listo para delegar o si todavía depende demasiado de ti."
     />
-    <link rel="stylesheet" href="styles.css?v=claridad-20261028" />
+    <link rel="stylesheet" href="styles.css?v=brechas-20261029" />
   </head>
   <body>
     <main class="shell">
@@ -35,7 +35,7 @@
           </div>
           <div class="score-preview" aria-label="Vista previa del resultado">
             <img
-              src="assets/operación-map.svg"
+              src="assets/operacion-map.svg"
               alt="Mapa visual de operación empresarial"
               width="360"
               height="260"
@@ -86,6 +86,17 @@
             Correo electrónico
             <input id="leadEmail" name="email" type="email" autocomplete="email" required />
           </label>
+          <label>
+            ¿Cuánto factura tu negocio al mes, aproximadamente?
+            <select id="leadRevenue" name="revenue_range" required>
+              <option value="">Selecciona una opción</option>
+              <option>Menos de $3,000</option>
+              <option>$3,000 a $5,000</option>
+              <option>$5,000 a $10,000</option>
+              <option>$10,000 a $30,000</option>
+              <option>Más de $30,000</option>
+            </select>
+          </label>
           <label style="display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:1.6">
             <input type="checkbox" name="newsletter_consent" required style="width:auto;margin-top:6px" />
             <span>Quiero ver mi resultado y suscribirme a «Lunes de Boost para tu negocio», el newsletter de Kleyi Elimar con ideas y recursos para ordenar mi negocio e información sobre sus servicios. Puedo darme de baja desde cualquier correo.</span>
@@ -120,6 +131,38 @@
           </div>
         </div>
 
+        <div class="result-grid">
+          <article class="gaps-article">
+            <h3>Tus brechas principales</h3>
+            <p class="gaps-note">Según tus respuestas, aquí está lo que más pesa hoy en tu operación.</p>
+            <ol id="reviewList"></ol>
+          </article>
+          <article>
+            <h3>Primer paso recomendado</h3>
+            <p id="nextStepText"></p>
+          </article>
+        </div>
+        <div class="cta-band">
+          <div class="cta-copy">
+            <p class="cta-tag">Tu siguiente paso</p>
+            <h3>Si tu negocio ya vende, el orden no es lujo. <span>Es capacidad.</span></h3>
+            <p>
+              Ya tienes tu orientación gratuita. Si quieres que revise tu negocio personalmente, puedes solicitar un análisis más profundo por $49: recibirás un informe, un video explicativo y un plan de trabajo por correo en 48 horas. Si decides trabajar conmigo, descontaré esos $49 del paquete o servicio que elijas.
+            </p>
+            <ul class="cta-benefits">
+              <li>Análisis personal de tu negocio</li>
+              <li>Informe, video y plan de trabajo</li>
+              <li>Entrega por correo en 48 horas</li>
+            </ul>
+          </div>
+          <div class="cta-action">
+            <button class="cta-button" id="startIntakeBtn" type="button">
+              Quiero el análisis personal de $49
+              <span aria-hidden="true">&rarr;</span>
+            </button>
+            <p class="cta-note">Opcional · $49 descontables si continuamos trabajando</p>
+          </div>
+        </div>
         <div class="visual-report">
           <article class="share-card" id="shareCard" aria-label="Visual descargable del resultado">
             <div class="share-topline">Kleyi Elimar | Diagnóstico de Orden Empresarial</div>
@@ -150,41 +193,6 @@
           </div>
         </div>
 
-        <div class="result-grid">
-          <article>
-            <h3>Reporte orientativo</h3>
-            <p id="meaningText"></p>
-          </article>
-          <article>
-            <h3>Primer paso recomendado</h3>
-            <p id="nextStepText"></p>
-          </article>
-          <article>
-            <h3>Tus brechas principales</h3>
-            <ul id="reviewList"></ul>
-          </article>
-        </div>
-        <div class="cta-band">
-          <div class="cta-copy">
-            <p class="cta-tag">Tu siguiente paso</p>
-            <h3>Si tu negocio ya vende, el orden no es lujo. <span>Es capacidad.</span></h3>
-            <p>
-              Ya tienes tu orientación gratuita. Si quieres que revise tu negocio personalmente, puedes solicitar un análisis más profundo por $49: recibirás un informe, un video explicativo y un plan de trabajo por correo en 48 horas. Si decides trabajar conmigo, descontaré esos $49 del paquete o servicio que elijas.
-            </p>
-            <ul class="cta-benefits">
-              <li>Análisis personal de tu negocio</li>
-              <li>Informe, video y plan de trabajo</li>
-              <li>Entrega por correo en 48 horas</li>
-            </ul>
-          </div>
-          <div class="cta-action">
-            <button class="cta-button" id="startIntakeBtn" type="button">
-              Quiero el análisis personal de $49
-              <span aria-hidden="true">&rarr;</span>
-            </button>
-            <p class="cta-note">Opcional · $49 descontables si continuamos trabajando</p>
-          </div>
-        </div>
       </section>
 
       <section class="intake-panel hidden" id="intakePanel" aria-labelledby="intake-title">
@@ -200,18 +208,6 @@
           <label>
             ¿Qué tipo de negocio tienes?
             <input name="business_type" maxlength="255" required placeholder="Ej. consultoría, limpieza, coaching, remodelación..." />
-          </label>
-
-          <label>
-            ¿Cuánto factura tu negocio al mes aproximadamente?
-            <select name="revenue_range" required>
-              <option value="">Selecciona una opción</option>
-              <option>Menos de $3,000</option>
-              <option>$3,000 a $5,000</option>
-              <option>$5,000 a $10,000</option>
-              <option>$10,000 a $30,000</option>
-              <option>Más de $30,000</option>
-            </select>
           </label>
 
           <label>
@@ -258,7 +254,7 @@
       </section>
     </main>
 
-    <script src="script.js?v=claridad-20261028"></script>
+    <script src="script.js?v=brechas-20261029"></script>
   </body>
 </html>
 

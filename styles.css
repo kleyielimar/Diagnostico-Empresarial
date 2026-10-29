@@ -768,3 +768,13 @@ h1 {
 
 /* Lectura móvil y encabezado compacto */
 h1,h2,h3,p{overflow-wrap:normal;word-break:normal}h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.15;text-transform:none}.brand-lockup{margin:14px 0 20px}.score-preview{display:none}.header-grid{grid-template-columns:1fr}.lead{font-size:17px}.tool-header{padding-bottom:24px}body{font-size:17px;line-height:1.65}.question-title{line-height:1.35}@media(max-width:560px){h1{font-size:28px;line-height:1.2}.shell{padding-top:12px}.brand-lockup{margin:8px 0 14px}.tool-header{padding-bottom:18px}.cta-button{white-space:normal;padding:16px 20px}}
+
+/* Mejoras lead magnet: formulario, brechas personalizadas y resultado más corto */
+.lead-form select{width:100%;height:48px;border:1px solid var(--line);border-radius:var(--radius);padding:0 14px;background:#fff;color:var(--ink);font:inherit}
+.result-grid{grid-template-columns:minmax(0,3fr) minmax(0,2fr)}
+.result-grid ol{margin:0;padding-left:22px;color:var(--muted);line-height:1.55;display:grid;gap:12px}
+.result-grid ol strong{color:var(--ink)}
+.result-grid ol span{display:block;margin-top:4px;color:var(--ink);font-size:.95em}
+.gaps-note{margin:0 0 14px;color:var(--muted)}
+.visual-report{margin-top:22px}
+@media(max-width:760px){.result-grid{grid-template-columns:1fr}.visual-report .share-card{display:none}}

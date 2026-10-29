@@ -4,11 +4,74 @@ const CONFIG = {
   supabaseUrl: "https://nrbrgovhgrrrwhnavszp.supabase.co",
   supabaseAnonKey: "sb_publishable_bJ_RuYKg4XgORYJXZ3klFA_zLs1BZx9",
   supabaseTable: "diagnostico_orden_leads",
+  // Nombres de campos personalizados en Systeme para el formulario principal.
+  // Deja un valor vacío ("") para no enviar ese dato a Systeme.
+  systemeLeadFields: {
+    revenue: "",
+    archetype: "",
+    score: "",
+    mainGap: "",
+  },
 };
+
+// Áreas que mide el diagnóstico. Cada pregunta suma a un área.
+const areas = {
+  dependencia: {
+    name: "Dependencia de ti",
+    gap: "Demasiadas decisiones pasan por ti.",
+    action: "Anota las decisiones que hoy solo tú tomas y marca cuáles podrían seguir una regla simple.",
+  },
+  procesos: {
+    name: "Procesos documentados",
+    gap: "Tus procesos viven en tu cabeza.",
+    action: "Documenta en pasos simples el proceso que más se repite cada semana.",
+  },
+  delegacion: {
+    name: "Delegación y responsabilidades",
+    gap: "Delegas sin responsables ni criterios claros.",
+    action: "Asigna a cada tarea importante un responsable, una fecha y un criterio de «terminado».",
+  },
+  clientes: {
+    name: "Clientes y seguimiento",
+    gap: "El seguimiento a clientes depende de tu memoria.",
+    action: "Define una ruta fija desde la primera consulta hasta la entrega, con recordatorios.",
+  },
+  digital: {
+    name: "Orden digital",
+    gap: "Tu información está repartida en muchos lugares.",
+    action: "Elige un solo lugar central para clientes, documentos, pagos y tareas.",
+  },
+  oferta: {
+    name: "Oferta y precios",
+    gap: "Tus servicios cambian según cada cliente.",
+    action: "Define qué incluye cada servicio, cuánto cuesta y cómo se entrega.",
+  },
+  medicion: {
+    name: "Prioridades y energía",
+    gap: "No ves qué tareas te consumen más energía.",
+    action: "Durante una semana, anota qué tareas te quitan más tiempo y cuáles se repiten.",
+  },
+};
+
+// Área de cada pregunta, en el mismo orden que `questions`.
+const questionAreas = [
+  "dependencia",
+  "procesos",
+  "clientes",
+  "delegacion",
+  "digital",
+  "clientes",
+  "delegacion",
+  "oferta",
+  "medicion",
+  "dependencia",
+  "delegacion",
+  "dependencia",
+];
 
 const questions = [
   {
-    text: "¿Si mañana no puedes trabajar, qué tan bien sigue funcionando tu negocio?",
+    text: "Si mañana no puedes trabajar, ¿qué tan bien sigue funcionando tu negocio?",
     options: [
       ["Se detiene casi todo porque muchas decisiones pasan por mí.", 0],
       ["Algunas cosas siguen, pero varias personas me escribirían para resolver.", 1],
@@ -20,11 +83,11 @@ const questions = [
     options: [
       ["No. La mayoría vive en mi cabeza o en mensajes sueltos.", 0],
       ["Algunos, pero no están actualizados ni fáciles de encontrar.", 1],
-      ["Sí. Estan claros, accesibles y se usan de verdad.", 2],
+      ["Sí. Están claros, accesibles y se usan de verdad.", 2],
     ],
   },
   {
-    text: "¿Cuando llega un nuevo cliente, existe una ruta clara de bienvenida y seguimiento?",
+    text: "Cuando llega un nuevo cliente, ¿existe una ruta clara de bienvenida y seguimiento?",
     options: [
       ["No. Lo voy resolviendo según el caso.", 0],
       ["Tengo pasos, pero todavía dependen mucho de recordatorios manuales.", 1],
@@ -43,38 +106,38 @@ const questions = [
     text: "¿Tienes un lugar central para clientes, documentos, pagos y tareas?",
     options: [
       ["No. Todo está repartido entre WhatsApp, Drive, notas y memoria.", 0],
-      ["Mas o menos, pero todavía hay información dispersa.", 1],
-      ["Sí. La información clave esta organizada y accesible.", 2],
+      ["Más o menos, pero todavía hay información dispersa.", 1],
+      ["Sí. La información clave está organizada y accesible.", 2],
     ],
   },
   {
     text: "¿Has perdido oportunidades por falta de seguimiento?",
     options: [
-      ["Sí, y me preocupa porque ya me esta costando dinero.", 0],
+      ["Sí, y me preocupa porque ya me está costando dinero.", 0],
       ["A veces. No siempre tengo claridad de qué se quedó pendiente.", 1],
       ["Rara vez. Tengo un sistema para dar seguimiento.", 2],
     ],
   },
   {
-    text: "¿Antes de contratar o pedir ayuda, sabes exactamente qué vas a delegar?",
+    text: "Antes de contratar o pedir ayuda, ¿sabes exactamente qué vas a delegar?",
     options: [
       ["No. Solo sé que necesito ayuda urgente.", 0],
       ["Tengo ideas, pero no están priorizadas ni documentadas.", 1],
-      ["Sí. Se que delegar, que documentar y que conservar conmigo.", 2],
+      ["Sí. Sé qué delegar, qué documentar y qué conservar conmigo.", 2],
     ],
   },
   {
     text: "¿Tus precios, servicios y entregables están claramente definidos?",
     options: [
       ["No del todo. A veces adapto demasiado según cada cliente.", 0],
-      ["Estan definidos, pero aún hay excepciones que desordenan la operación.", 1],
-      ["Sí. Se que vendo, que incluye y como se entrega.", 2],
+      ["Están definidos, pero aún hay excepciones que desordenan la operación.", 1],
+      ["Sí. Sé qué vendo, qué incluye y cómo se entrega.", 2],
     ],
   },
   {
     text: "¿Puedes ver rápidamente qué tareas consumen más energía cada semana?",
     options: [
-      ["No. Solo siento que estoy ocupada todo el tiempo.", 0],
+      ["No. Solo siento que no paro en todo el día.", 0],
       ["Tengo una idea, pero no lo mido ni lo reviso con frecuencia.", 1],
       ["Sí. Tengo claridad de los puntos que más pesan.", 2],
     ],
@@ -100,7 +163,7 @@ const questions = [
     options: [
       ["Pesada. Estoy apagando fuegos y sosteniendo demasiado.", 0],
       ["En transición. Ya veo que necesito ordenar para seguir creciendo.", 1],
-      ["Mas estable. Hay estructura, aunque siempre se puede mejorar.", 2],
+      ["Más estable. Hay estructura, aunque siempre se puede mejorar.", 2],
     ],
   },
 ];
@@ -111,7 +174,7 @@ const levels = [
     max: 8,
     title: "Tu negocio depende demasiado de ti",
     label: "Alta dependencia",
-    archetype: "La Fundadora Pulpo",
+    archetype: "Modo Pulpo",
     archetypeText:
       "Sostienes demasiadas decisiones, recordatorios y detalles a la vez. El negocio existe, pero todavía no tiene suficiente estructura para soltar peso sin perder control.",
     buyerSignal: "Necesita orden antes de contratar más ayuda.",
@@ -131,19 +194,19 @@ const levels = [
     max: 15,
     title: "Tu negocio está en crecimiento desordenado",
     label: "Orden parcial",
-    archetype: "La Operadora en Transición",
+    archetype: "Operación en Transición",
     archetypeText:
       "Ya tienes algunas bases, pero todavía hay huecos que te obligan a improvisar. Este es el momento ideal para convertir experiencia en sistema.",
-    buyerSignal: "Esta lista para priorizar procesos y delegar con criterio.",
+    buyerSignal: "Está en el momento de priorizar procesos y delegar con criterio.",
     visualSubtitle: "Hay avances, pero todavía falta una ruta clara.",
-    gap: "Procesos criticos sin instrucciones simples.",
-    handoff: "Priorizar que se delega, automatiza y documenta.",
+    gap: "Procesos críticos sin instrucciones simples.",
+    handoff: "Priorizar qué se delega, automatiza y documenta.",
     summary:
-      "Ya existen algunas bases, pero todavía hay partes importantes que dependen de improvisacion, excepciones o recordatorios manuales.",
+      "Ya existen algunas bases, pero todavía hay partes importantes que dependen de improvisación, excepciones o recordatorios manuales.",
     meaning:
-      "Este es el punto donde muchas duenas sienten que el negocio crece, pero también crecen los pendientes, las dudas y la supervision.",
+      "Este es el punto donde muchas personas dueñas de negocio sienten que el negocio crece, pero también crecen los pendientes, las dudas y la supervisión.",
     next:
-      "Prioriza 3 procesos criticos y conviertelos en instrucciones simples. Luego decide que se delega, que se automatiza y que necesita seguir bajo tu criterio.",
+      "Prioriza 3 procesos críticos y conviértelos en instrucciones simples. Luego decide qué se delega, qué se automatiza y qué necesita seguir bajo tu criterio.",
     review: ["Procesos que se repiten cada semana", "Tareas listas para delegar", "Herramientas que hoy están duplicando trabajo"],
   },
   {
@@ -151,7 +214,7 @@ const levels = [
     max: 21,
     title: "Tu negocio está cerca de delegar con más control",
     label: "Base funcional",
-    archetype: "La Delegadora Selectiva",
+    archetype: "Delegación Selectiva",
     archetypeText:
       "Tu operación ya tiene estructura en varias áreas. Ahora toca reforzar responsabilidades, criterios y seguimiento para que el crecimiento no dependa de estar encima de todo.",
     buyerSignal: "Puede avanzar hacia delegación, roles y medición.",
@@ -164,16 +227,16 @@ const levels = [
       "Este nivel indica que no estás empezando desde cero. Ahora el trabajo es fortalecer la operación para que no dependa de estar encima de todo.",
     next:
       "Crea un mapa de responsabilidades y revisa dónde todavía eres el cuello de botella. Ese mapa te dirá qué rol, sistema o proceso debe venir después.",
-    review: ["Responsabilidades por area", "Indicadores de seguimiento", "Proceso de onboarding de cliente"],
+    review: ["Responsabilidades por área", "Indicadores de seguimiento", "Proceso de onboarding de cliente"],
   },
   {
     min: 22,
     max: 24,
     title: "Tu negocio tiene estructura para crecer con menos fricción",
     label: "Listo para optimizar",
-    archetype: "La CEO Optimizadora",
+    archetype: "Modo CEO",
     archetypeText:
-      "Tu negocio tiene bases claras. El próximo salto esta en medir mejor, optimizar la experiencia del cliente y preparar decisiones con menos fricción.",
+      "Tu negocio tiene bases claras. El próximo salto está en medir mejor, optimizar la experiencia del cliente y preparar decisiones con menos fricción.",
     buyerSignal: "Busca optimización, indicadores y escala más fina.",
     visualSubtitle: "La estructura ya sostiene; ahora toca afinar.",
     gap: "Métricas y cuellos de botella finos.",
@@ -219,7 +282,7 @@ function postEmbedHeight() {
 
   window.parent.postMessage(
     {
-      source: "kleyi-diagnóstico-orden",
+      source: "kleyi-diagnostico-orden",
       height: height + 24,
     },
     "*"
@@ -246,6 +309,32 @@ function getLevel(score = getScore()) {
   return levels.find((level) => score >= level.min && score <= level.max) || levels[0];
 }
 
+// Devuelve hasta 3 áreas con menor puntaje promedio (las brechas reales de esta persona).
+function getWeakAreas(limit = 3) {
+  const totals = {};
+  questionAreas.forEach((key, index) => {
+    if (!Number.isInteger(answers[index])) return;
+    totals[key] = totals[key] || { key, sum: 0, count: 0, first: index };
+    totals[key].sum += answers[index];
+    totals[key].count += 1;
+  });
+  return Object.values(totals)
+    .map((item) => ({ ...item, avg: item.sum / item.count }))
+    .filter((item) => item.avg < 2)
+    .sort((a, b) => a.avg - b.avg || a.first - b.first)
+    .slice(0, limit)
+    .map((item) => ({ key: item.key, ...areas[item.key] }));
+}
+
+function getMainGap() {
+  const [first] = getWeakAreas(1);
+  return first ? first.gap : getLevel().gap;
+}
+
+function getRevenue() {
+  return document.getElementById("leadRevenue")?.value || "";
+}
+
 function getLeadPayload(stage, extra = {}) {
   const level = getLevel();
   return {
@@ -256,9 +345,26 @@ function getLeadPayload(stage, extra = {}) {
     level: level.label,
     archetype: level.archetype,
     buyer_signal: level.buyerSignal,
+    revenue_range: getRevenue(),
     completed_at: new Date().toISOString(),
+    payload: { weak_areas: getWeakAreas().map((area) => area.name), answers: [...answers] },
     ...extra,
   };
+}
+
+function getSystemeLeadFields() {
+  const names = CONFIG.systemeLeadFields;
+  const values = {
+    revenue: getRevenue(),
+    archetype: getLevel().archetype,
+    score: String(getScore()),
+    mainGap: getMainGap(),
+  };
+  const fields = {};
+  for (const [key, name] of Object.entries(names)) {
+    if (name) fields[name] = values[key];
+  }
+  return fields;
 }
 
 async function saveLeadRecord(stage, extra = {}) {
@@ -342,7 +448,7 @@ nextBtn.addEventListener("click", () => {
     return;
   }
 
-  diagnosticForm.classList.add("hidden");
+  document.querySelector(".diagnostic-layout").classList.add("hidden");
   capturePanel.classList.remove("hidden");
   capturePanel.scrollIntoView({ behavior: "smooth", block: "start" });
   scheduleEmbedHeight();
@@ -407,7 +513,7 @@ leadForm.addEventListener("submit", async (event) => {
   status.textContent = "Estamos confirmando tu registro. Conservaremos tus respuestas en esta página.";
   scheduleEmbedHeight();
   try {
-    await registerWithSysteme();
+    await registerWithSysteme(CONFIG.systemeFormAction, getSystemeLeadFields());
     const payload = getLeadPayload("lead");
     await saveLeadRecord("lead", payload);
     status.textContent = "Registro confirmado.";
@@ -433,13 +539,15 @@ function renderResult() {
   document.getElementById("shareArchetype").textContent = level.archetype;
   document.getElementById("shareSubtitle").textContent = level.visualSubtitle;
   document.getElementById("shareScore").textContent = `${score}/24`;
-  document.getElementById("shareGap").textContent = level.gap;
+  document.getElementById("shareGap").textContent = getMainGap();
   document.getElementById("shareNext").textContent = level.handoff;
-  document.getElementById("meaningText").textContent = level.meaning;
   document.getElementById("nextStepText").textContent = level.next;
-  document.getElementById("reviewList").innerHTML = level.review
-    .map((item) => `<li>${item}</li>`)
-    .join("");
+  const weakAreas = getWeakAreas();
+  document.getElementById("reviewList").innerHTML = weakAreas.length
+    ? weakAreas
+        .map((area) => `<li><strong>${area.name}.</strong> ${area.gap} <span>${area.action}</span></li>`)
+        .join("")
+    : level.review.map((item) => `<li>${item}</li>`).join("");
 
   capturePanel.classList.add("hidden");
   resultPanel.classList.remove("hidden");
@@ -453,7 +561,7 @@ function buildSummaryText() {
     "Diagnóstico de Orden Empresarial - Kleyi Elimar",
     `Arquetipo: ${level.archetype}`,
     `Puntaje: ${getScore()}/24`,
-    `Brecha principal: ${level.gap}`,
+    `Brecha principal: ${getMainGap()}`,
     `Siguiente paso: ${level.handoff}`,
   ].join("\n");
 }
@@ -553,7 +661,7 @@ downloadCardBtn.addEventListener("click", () => {
   ctx.fillText("Brecha principal", 470, 820);
   ctx.fillStyle = "#45625d";
   ctx.font = "800 34px Arial";
-  wrapText(ctx, level.gap, 470, 870, 360, 42, 2);
+  wrapText(ctx, getMainGap(), 470, 870, 360, 42, 3);
 
   ctx.fillStyle = "#45625d";
   ctx.font = "700 30px Arial";
@@ -563,10 +671,10 @@ downloadCardBtn.addEventListener("click", () => {
 
   ctx.fillStyle = "#6aa5a9";
   ctx.font = "700 24px Arial";
-  ctx.fillText("info.kleyielimar.com/diagnóstico-empresarial", 120, 1215);
+  ctx.fillText("info.kleyielimar.com/diagnosticoexpresspublic", 120, 1215);
 
   const link = document.createElement("a");
-  link.download = "diagnóstico-orden-empresarial-kleyi.png";
+  link.download = "diagnostico-orden-empresarial-kleyi.png";
   link.href = canvas.toDataURL("image/png");
   link.click();
 });
@@ -585,7 +693,7 @@ intakeForm.addEventListener("submit", async (event) => {
   const status = document.getElementById("intakeStatus");
   const data = Object.fromEntries(new FormData(intakeForm).entries());
   const lead = getLeadPayload("intake");
-  const values = [data.business_type, data.revenue_range, data.main_problem, data.attempted_fix, data.desired_outcome, data.team_status];
+  const values = [data.business_type, getRevenue(), data.main_problem, data.attempted_fix, data.desired_outcome, data.team_status];
   if (values.some(value => !value || value.length > 255) || lead.first_name.length > 100) {
     status.textContent = "Escribe respuestas de hasta 255 caracteres y un nombre de hasta 100 caracteres.";
     return;
