@@ -729,4 +729,6 @@ if (window.ResizeObserver) {
 document.documentElement.classList.toggle("is-embedded", window.self !== window.top);
 renderQuestion();
 scheduleEmbedHeight();
+// La página que lo inserta puede tardar en escuchar; se reenvía la altura al inicio.
+[600, 1500, 3000, 6000].forEach((ms) => setTimeout(scheduleEmbedHeight, ms));
 
