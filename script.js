@@ -8,7 +8,7 @@ const CONFIG = {
 
 const questions = [
   {
-    text: "¿Si mañana no puedes trabajar, qué tan bien sigue funcionando tu negocio?",
+    text: "Si mañana no puedes trabajar, ¿qué tan bien sigue funcionando tu negocio?",
     options: [
       ["Se detiene casi todo porque muchas decisiones pasan por mí.", 0],
       ["Algunas cosas siguen, pero varias personas me escribirían para resolver.", 1],
@@ -24,7 +24,7 @@ const questions = [
     ],
   },
   {
-    text: "¿Cuando llega un nuevo cliente, existe una ruta clara de bienvenida y seguimiento?",
+    text: "Cuando llega un nuevo cliente, ¿existe una ruta clara de bienvenida y seguimiento?",
     options: [
       ["No. Lo voy resolviendo según el caso.", 0],
       ["Tengo pasos, pero todavía dependen mucho de recordatorios manuales.", 1],
@@ -56,7 +56,7 @@ const questions = [
     ],
   },
   {
-    text: "¿Antes de contratar o pedir ayuda, sabes exactamente qué vas a delegar?",
+    text: "Antes de contratar o pedir ayuda, ¿sabes exactamente qué vas a delegar?",
     options: [
       ["No. Solo sé que necesito ayuda urgente.", 0],
       ["Tengo ideas, pero no están priorizadas ni documentadas.", 1],
@@ -210,12 +210,7 @@ const copySummaryBtn = document.getElementById("copySummaryBtn");
 const downloadCardBtn = document.getElementById("downloadCardBtn");
 
 function postEmbedHeight() {
-  const height = Math.max(
-    document.body.scrollHeight,
-    document.documentElement.scrollHeight,
-    document.body.offsetHeight,
-    document.documentElement.offsetHeight
-  );
+  const height = Math.ceil(document.querySelector(".shell").getBoundingClientRect().height);
 
   window.parent.postMessage(
     {
@@ -620,6 +615,7 @@ if (window.ResizeObserver) {
   new ResizeObserver(scheduleEmbedHeight).observe(document.body);
 }
 
+document.documentElement.classList.toggle("is-embedded", window.self !== window.top);
 renderQuestion();
 scheduleEmbedHeight();
 
