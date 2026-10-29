@@ -726,6 +726,7 @@ if (window.ResizeObserver) {
   new ResizeObserver(scheduleEmbedHeight).observe(document.body);
 }
 
+document.documentElement.classList.toggle("is-embedded", window.self !== window.top);
 renderQuestion();
 scheduleEmbedHeight();
 
