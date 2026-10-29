@@ -1,5 +1,5 @@
 const CONFIG = {
-  bookingUrl: "https://calendar.app.google/Dy2h9mcBh4KhMZ5eA",
+  bookingUrl: "https://kleyielimar.com/opciones-del-diagnostico/",
   systemeFormAction: "https://systeme.io/embedded/46105223/subscription",
   supabaseUrl: "https://nrbrgovhgrrrwhnavszp.supabase.co",
   supabaseAnonKey: "sb_publishable_bJ_RuYKg4XgORYJXZ3klFA_zLs1BZx9",
@@ -8,98 +8,98 @@ const CONFIG = {
 
 const questions = [
   {
-    text: "Si manana no puedes trabajar, que tan bien sigue funcionando tu negocio?",
+    text: "¿Si mañana no puedes trabajar, qué tan bien sigue funcionando tu negocio?",
     options: [
-      ["Se detiene casi todo porque muchas decisiones pasan por mi.", 0],
-      ["Algunas cosas siguen, pero varias personas me escribirian para resolver.", 1],
-      ["La operacion principal puede avanzar con instrucciones claras.", 2],
+      ["Se detiene casi todo porque muchas decisiones pasan por mí.", 0],
+      ["Algunas cosas siguen, pero varias personas me escribirían para resolver.", 1],
+      ["La operación principal puede avanzar con instrucciones claras.", 2],
     ],
   },
   {
-    text: "Tus procesos mas repetidos estan documentados?",
+    text: "¿Tus procesos más repetidos están documentados?",
     options: [
-      ["No. La mayoria vive en mi cabeza o en mensajes sueltos.", 0],
-      ["Algunos, pero no estan actualizados ni faciles de encontrar.", 1],
-      ["Si. Estan claros, accesibles y se usan de verdad.", 2],
+      ["No. La mayoría vive en mi cabeza o en mensajes sueltos.", 0],
+      ["Algunos, pero no están actualizados ni fáciles de encontrar.", 1],
+      ["Sí. Estan claros, accesibles y se usan de verdad.", 2],
     ],
   },
   {
-    text: "Cuando llega un nuevo cliente, existe una ruta clara de bienvenida y seguimiento?",
+    text: "¿Cuando llega un nuevo cliente, existe una ruta clara de bienvenida y seguimiento?",
     options: [
-      ["No. Lo voy resolviendo segun el caso.", 0],
-      ["Tengo pasos, pero todavia dependen mucho de recordatorios manuales.", 1],
-      ["Si. El cliente recibe una experiencia consistente.", 2],
+      ["No. Lo voy resolviendo según el caso.", 0],
+      ["Tengo pasos, pero todavía dependen mucho de recordatorios manuales.", 1],
+      ["Sí. El cliente recibe una experiencia consistente.", 2],
     ],
   },
   {
-    text: "Que pasa cuando intentas delegar una tarea?",
+    text: "¿Qué pasa cuando intentas delegar una tarea?",
     options: [
       ["Termino explicando mucho o corrigiendo casi todo.", 0],
-      ["Puedo delegar partes, pero todavia debo supervisar demasiado.", 1],
-      ["La persona sabe que hacer, donde encontrarlo y como reportar avances.", 2],
+      ["Puedo delegar partes, pero todavía debo supervisar demasiado.", 1],
+      ["La persona sabe qué hacer, dónde encontrarlo y cómo reportar avances.", 2],
     ],
   },
   {
-    text: "Tienes un lugar central para clientes, documentos, pagos y tareas?",
+    text: "¿Tienes un lugar central para clientes, documentos, pagos y tareas?",
     options: [
-      ["No. Todo esta repartido entre WhatsApp, Drive, notas y memoria.", 0],
-      ["Mas o menos, pero todavia hay informacion dispersa.", 1],
-      ["Si. La informacion clave esta organizada y accesible.", 2],
+      ["No. Todo está repartido entre WhatsApp, Drive, notas y memoria.", 0],
+      ["Mas o menos, pero todavía hay información dispersa.", 1],
+      ["Sí. La información clave esta organizada y accesible.", 2],
     ],
   },
   {
-    text: "Has perdido oportunidades por falta de seguimiento?",
+    text: "¿Has perdido oportunidades por falta de seguimiento?",
     options: [
-      ["Si, y me preocupa porque ya me esta costando dinero.", 0],
-      ["A veces. No siempre tengo claridad de que se quedo pendiente.", 1],
+      ["Sí, y me preocupa porque ya me esta costando dinero.", 0],
+      ["A veces. No siempre tengo claridad de qué se quedó pendiente.", 1],
       ["Rara vez. Tengo un sistema para dar seguimiento.", 2],
     ],
   },
   {
-    text: "Antes de contratar o pedir ayuda, sabes exactamente que vas a delegar?",
+    text: "¿Antes de contratar o pedir ayuda, sabes exactamente qué vas a delegar?",
     options: [
-      ["No. Solo se que necesito ayuda urgente.", 0],
-      ["Tengo ideas, pero no estan priorizadas ni documentadas.", 1],
-      ["Si. Se que delegar, que documentar y que conservar conmigo.", 2],
+      ["No. Solo sé que necesito ayuda urgente.", 0],
+      ["Tengo ideas, pero no están priorizadas ni documentadas.", 1],
+      ["Sí. Se que delegar, que documentar y que conservar conmigo.", 2],
     ],
   },
   {
-    text: "Tus precios, servicios y entregables estan claramente definidos?",
+    text: "¿Tus precios, servicios y entregables están claramente definidos?",
     options: [
-      ["No del todo. A veces adapto demasiado segun cada cliente.", 0],
-      ["Estan definidos, pero aun hay excepciones que desordenan la operacion.", 1],
-      ["Si. Se que vendo, que incluye y como se entrega.", 2],
+      ["No del todo. A veces adapto demasiado según cada cliente.", 0],
+      ["Estan definidos, pero aún hay excepciones que desordenan la operación.", 1],
+      ["Sí. Se que vendo, que incluye y como se entrega.", 2],
     ],
   },
   {
-    text: "Puedes ver rapidamente que tareas consumen mas energia cada semana?",
+    text: "¿Puedes ver rápidamente qué tareas consumen más energía cada semana?",
     options: [
       ["No. Solo siento que estoy ocupada todo el tiempo.", 0],
       ["Tengo una idea, pero no lo mido ni lo reviso con frecuencia.", 1],
-      ["Si. Tengo claridad de los puntos que mas pesan.", 2],
+      ["Sí. Tengo claridad de los puntos que más pesan.", 2],
     ],
   },
   {
-    text: "Tu negocio puede crecer sin aumentar proporcionalmente tu cansancio?",
+    text: "¿Tu negocio puede crecer sin aumentar proporcionalmente tu cansancio?",
     options: [
-      ["No. Si vendo mas, siento que tambien se multiplica el caos.", 0],
-      ["Tal vez, pero tendria que ordenar varias cosas primero.", 1],
-      ["Si. Tengo base para sostener mas volumen con control.", 2],
+      ["No. Si vendo más, siento que también se multiplica el caos.", 0],
+      ["Tal vez, pero tendría que ordenar varias cosas primero.", 1],
+      ["Sí. Tengo base para sostener más volumen con control.", 2],
     ],
   },
   {
-    text: "Que tan clara esta la responsabilidad de cada tarea en tu negocio?",
+    text: "¿Qué tan clara está la responsabilidad de cada tarea en tu negocio?",
     options: [
-      ["Poco clara. Muchas cosas terminan regresando a mi.", 0],
+      ["Poco clara. Muchas cosas terminan regresando a mí.", 0],
       ["Hay responsables, pero no siempre hay seguimiento claro.", 1],
-      ["Clara. Cada tarea importante tiene dueno, fecha y criterio.", 2],
+      ["Clara. Cada tarea importante tiene responsable, fecha y criterio.", 2],
     ],
   },
   {
-    text: "Como se siente tu operacion en este momento?",
+    text: "¿Cómo se siente tu operación en este momento?",
     options: [
       ["Pesada. Estoy apagando fuegos y sosteniendo demasiado.", 0],
-      ["En transicion. Ya veo que necesito ordenar para seguir creciendo.", 1],
+      ["En transición. Ya veo que necesito ordenar para seguir creciendo.", 1],
       ["Mas estable. Hay estructura, aunque siempre se puede mejorar.", 2],
     ],
   },
@@ -113,78 +113,78 @@ const levels = [
     label: "Alta dependencia",
     archetype: "La Fundadora Pulpo",
     archetypeText:
-      "Sostienes demasiadas decisiones, recordatorios y detalles a la vez. El negocio existe, pero todavia no tiene suficiente estructura para soltar peso sin perder control.",
-    buyerSignal: "Necesita orden antes de contratar mas ayuda.",
+      "Sostienes demasiadas decisiones, recordatorios y detalles a la vez. El negocio existe, pero todavía no tiene suficiente estructura para soltar peso sin perder control.",
+    buyerSignal: "Necesita orden antes de contratar más ayuda.",
     visualSubtitle: "Mucho movimiento, poca estructura visible.",
     gap: "Procesos en tu cabeza y seguimiento manual.",
     handoff: "Mapear lo repetible antes de delegar.",
     summary:
-      "Tu negocio puede estar vendiendo, pero la operacion todavia descansa demasiado sobre tu memoria, decisiones y seguimiento diario.",
+      "Tu negocio puede estar vendiendo, pero la operación todavía descansa demasiado sobre tu memoria, decisiones y seguimiento diario.",
     meaning:
-      "Este nivel suele aparecer cuando hay clientes activos, pero no hay suficiente estructura para sostener mas demanda sin aumentar el cansancio.",
+      "Este nivel suele aparecer cuando hay clientes activos, pero no hay suficiente estructura para sostener más demanda sin aumentar el cansancio.",
     next:
-      "Empieza por mapear los procesos que mas se repiten: entrada de clientes, seguimiento, cobros, entrega y comunicacion. No contrates mas ayuda hasta saber que vas a delegar.",
-    review: ["Seguimiento a prospectos y clientes", "Documentos y archivos clave", "Tareas que solo tu sabes hacer"],
+      "Empieza por mapear los procesos que más se repiten: entrada de clientes, seguimiento, cobros, entrega y comunicación. No contrates más ayuda hasta saber qué vas a delegar.",
+    review: ["Seguimiento a prospectos y clientes", "Documentos y archivos clave", "Tareas que solo tú sabes hacer"],
   },
   {
     min: 9,
     max: 15,
-    title: "Tu negocio esta en crecimiento desordenado",
+    title: "Tu negocio está en crecimiento desordenado",
     label: "Orden parcial",
-    archetype: "La Operadora en Transicion",
+    archetype: "La Operadora en Transición",
     archetypeText:
-      "Ya tienes algunas bases, pero todavia hay huecos que te obligan a improvisar. Este es el momento ideal para convertir experiencia en sistema.",
+      "Ya tienes algunas bases, pero todavía hay huecos que te obligan a improvisar. Este es el momento ideal para convertir experiencia en sistema.",
     buyerSignal: "Esta lista para priorizar procesos y delegar con criterio.",
-    visualSubtitle: "Hay avances, pero todavia falta una ruta clara.",
+    visualSubtitle: "Hay avances, pero todavía falta una ruta clara.",
     gap: "Procesos criticos sin instrucciones simples.",
     handoff: "Priorizar que se delega, automatiza y documenta.",
     summary:
-      "Ya existen algunas bases, pero todavia hay partes importantes que dependen de improvisacion, excepciones o recordatorios manuales.",
+      "Ya existen algunas bases, pero todavía hay partes importantes que dependen de improvisacion, excepciones o recordatorios manuales.",
     meaning:
-      "Este es el punto donde muchas duenas sienten que el negocio crece, pero tambien crecen los pendientes, las dudas y la supervision.",
+      "Este es el punto donde muchas duenas sienten que el negocio crece, pero también crecen los pendientes, las dudas y la supervision.",
     next:
       "Prioriza 3 procesos criticos y conviertelos en instrucciones simples. Luego decide que se delega, que se automatiza y que necesita seguir bajo tu criterio.",
-    review: ["Procesos que se repiten cada semana", "Tareas listas para delegar", "Herramientas que hoy estan duplicando trabajo"],
+    review: ["Procesos que se repiten cada semana", "Tareas listas para delegar", "Herramientas que hoy están duplicando trabajo"],
   },
   {
     min: 16,
     max: 21,
-    title: "Tu negocio esta cerca de delegar con mas control",
+    title: "Tu negocio está cerca de delegar con más control",
     label: "Base funcional",
     archetype: "La Delegadora Selectiva",
     archetypeText:
-      "Tu operacion ya tiene estructura en varias areas. Ahora toca reforzar responsabilidades, criterios y seguimiento para que el crecimiento no dependa de estar encima de todo.",
-    buyerSignal: "Puede avanzar hacia delegacion, roles y medicion.",
+      "Tu operación ya tiene estructura en varias áreas. Ahora toca reforzar responsabilidades, criterios y seguimiento para que el crecimiento no dependa de estar encima de todo.",
+    buyerSignal: "Puede avanzar hacia delegación, roles y medición.",
     visualSubtitle: "Existe base; falta convertirla en control repetible.",
-    gap: "Responsabilidades y criterios aun incompletos.",
+    gap: "Responsabilidades y criterios aún incompletos.",
     handoff: "Crear mapa de responsabilidades y seguimiento.",
     summary:
-      "Tienes estructura en varias areas, pero todavia necesitas reforzar documentacion, seguimiento y criterios antes de escalar mas.",
+      "Tienes estructura en varias áreas, pero todavía necesitas reforzar documentación, seguimiento y criterios antes de escalar más.",
     meaning:
-      "Este nivel indica que no estas empezando desde cero. Ahora el trabajo es fortalecer la operacion para que no dependa de estar encima de todo.",
+      "Este nivel indica que no estás empezando desde cero. Ahora el trabajo es fortalecer la operación para que no dependa de estar encima de todo.",
     next:
-      "Crea un mapa de responsabilidades y revisa donde todavia eres el cuello de botella. Ese mapa te dira que rol, sistema o proceso debe venir despues.",
+      "Crea un mapa de responsabilidades y revisa dónde todavía eres el cuello de botella. Ese mapa te dirá qué rol, sistema o proceso debe venir después.",
     review: ["Responsabilidades por area", "Indicadores de seguimiento", "Proceso de onboarding de cliente"],
   },
   {
     min: 22,
     max: 24,
-    title: "Tu negocio tiene estructura para crecer con menos friccion",
+    title: "Tu negocio tiene estructura para crecer con menos fricción",
     label: "Listo para optimizar",
     archetype: "La CEO Optimizadora",
     archetypeText:
-      "Tu negocio tiene bases claras. El proximo salto esta en medir mejor, optimizar la experiencia del cliente y preparar decisiones con menos friccion.",
-    buyerSignal: "Busca optimizacion, indicadores y escala mas fina.",
+      "Tu negocio tiene bases claras. El próximo salto esta en medir mejor, optimizar la experiencia del cliente y preparar decisiones con menos fricción.",
+    buyerSignal: "Busca optimización, indicadores y escala más fina.",
     visualSubtitle: "La estructura ya sostiene; ahora toca afinar.",
-    gap: "Metricas y cuellos de botella finos.",
+    gap: "Métricas y cuellos de botella finos.",
     handoff: "Auditar experiencia, tiempos e indicadores.",
     summary:
-      "Tu operacion ya tiene bases claras. El siguiente paso no es ordenar desde cero, sino optimizar, medir y preparar mejor la escala.",
+      "Tu operación ya tiene bases claras. El siguiente paso no es ordenar desde cero, sino optimizar, medir y preparar mejor la escala.",
     meaning:
-      "Aqui conviene revisar cuellos de botella finos: calidad, tiempos, experiencia del cliente, indicadores y decisiones que aun requieren demasiado de ti.",
+      "Aquí conviene revisar cuellos de botella finos: calidad, tiempos, experiencia del cliente, indicadores y decisiones que aún requieren demasiado de ti.",
     next:
-      "Audita la experiencia completa del cliente y define que indicadores vas a revisar cada semana para sostener crecimiento con control.",
-    review: ["Metricas operativas", "Experiencia del cliente", "Decisiones que todavia no tienen criterio claro"],
+      "Audita la experiencia completa del cliente y define qué indicadores vas a revisar cada semana para sostener crecimiento con control.",
+    review: ["Métricas operativas", "Experiencia del cliente", "Decisiones que todavía no tienen criterio claro"],
   },
 ];
 
@@ -219,7 +219,7 @@ function postEmbedHeight() {
 
   window.parent.postMessage(
     {
-      source: "kleyi-diagnostico-orden",
+      source: "kleyi-diagnóstico-orden",
       height: height + 24,
     },
     "*"
@@ -316,7 +316,7 @@ function renderQuestion() {
   prevBtn.disabled = currentQuestion === 0;
   nextBtn.textContent = currentQuestion === questions.length - 1 ? "Terminar" : "Siguiente";
   nextBtn.disabled = selected === null;
-  liveLevel.textContent = getAnsweredCount() < 4 ? "En evaluacion" : getLevel().label;
+  liveLevel.textContent = getAnsweredCount() < 4 ? "En evaluación" : getLevel().label;
   scheduleEmbedHeight();
 }
 
@@ -324,7 +324,7 @@ questionStage.addEventListener("change", (event) => {
   if (event.target.name !== "question") return;
   answers[currentQuestion] = Number(event.target.value);
   nextBtn.disabled = false;
-  liveLevel.textContent = getAnsweredCount() < 4 ? "En evaluacion" : getLevel().label;
+  liveLevel.textContent = getAnsweredCount() < 4 ? "En evaluación" : getLevel().label;
   scheduleEmbedHeight();
 });
 
@@ -450,7 +450,7 @@ function renderResult() {
 function buildSummaryText() {
   const level = getLevel();
   return [
-    "Diagnostico de Orden Empresarial - Kleyi Elimar",
+    "Diagnóstico de Orden Empresarial - Kleyi Elimar",
     `Arquetipo: ${level.archetype}`,
     `Puntaje: ${getScore()}/24`,
     `Brecha principal: ${level.gap}`,
@@ -528,7 +528,7 @@ downloadCardBtn.addEventListener("click", () => {
 
   ctx.fillStyle = "#45625d";
   ctx.font = "900 58px Arial";
-  wrapText(ctx, "Diagnostico de Orden Empresarial", 120, 250, 820, 68, 3);
+  wrapText(ctx, "Diagnóstico de Orden Empresarial", 120, 250, 820, 68, 3);
 
   ctx.fillStyle = "#6aa5a9";
   ctx.font = "700 28px Arial";
@@ -563,10 +563,10 @@ downloadCardBtn.addEventListener("click", () => {
 
   ctx.fillStyle = "#6aa5a9";
   ctx.font = "700 24px Arial";
-  ctx.fillText("info.kleyielimar.com/diagnostico-empresarial", 120, 1215);
+  ctx.fillText("info.kleyielimar.com/diagnóstico-empresarial", 120, 1215);
 
   const link = document.createElement("a");
-  link.download = "diagnostico-orden-empresarial-kleyi.png";
+  link.download = "diagnóstico-orden-empresarial-kleyi.png";
   link.href = canvas.toDataURL("image/png");
   link.click();
 });
@@ -595,12 +595,12 @@ intakeForm.addEventListener("submit", async (event) => {
   values.forEach((value, index) => { fields["diagnostico_r" + (index + 1)] = value; });
   button.disabled = true;
   button.textContent = "Enviando tus respuestas…";
-  status.textContent = "Estamos guardando tu ficha para preparar la sesión.";
+  status.textContent = "Estamos guardando tu contexto para el análisis personal.";
   scheduleEmbedHeight();
   try {
     await registerWithSysteme("https://systeme.io/embedded/46115937/subscription", fields);
     localStorage.setItem("diagnosticoOrdenIntake", JSON.stringify({...lead, ...data}));
-    status.textContent = "Ficha recibida. Ahora puedes elegir una hora disponible para tu sesión de 30 minutos.";
+    status.textContent = "Contexto recibido. Consulta los detalles del análisis personal opcional de $49.";
     bookingLink.href = CONFIG.bookingUrl;
     bookingPanel.classList.remove("hidden");
     bookingPanel.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -608,7 +608,7 @@ intakeForm.addEventListener("submit", async (event) => {
     status.textContent = "No pudimos confirmar el envío de tu ficha. Tus respuestas siguen aquí. Revisa tu conexión y vuelve a intentarlo.";
   } finally {
     button.disabled = false;
-    button.textContent = "Enviar respuestas y ver agenda";
+    button.textContent = "Enviar mi contexto";
     scheduleEmbedHeight();
   }
 });
