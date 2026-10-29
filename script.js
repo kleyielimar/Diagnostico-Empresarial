@@ -20,7 +20,7 @@ const questions = [
     options: [
       ["No. La mayoría vive en mi cabeza o en mensajes sueltos.", 0],
       ["Algunos, pero no están actualizados ni fáciles de encontrar.", 1],
-      ["Sí. Estan claros, accesibles y se usan de verdad.", 2],
+      ["Sí. Están claros, accesibles y se usan de verdad.", 2],
     ],
   },
   {
@@ -43,14 +43,14 @@ const questions = [
     text: "¿Tienes un lugar central para clientes, documentos, pagos y tareas?",
     options: [
       ["No. Todo está repartido entre WhatsApp, Drive, notas y memoria.", 0],
-      ["Mas o menos, pero todavía hay información dispersa.", 1],
-      ["Sí. La información clave esta organizada y accesible.", 2],
+      ["Más o menos, pero todavía hay información dispersa.", 1],
+      ["Sí. La información clave está organizada y accesible.", 2],
     ],
   },
   {
     text: "¿Has perdido oportunidades por falta de seguimiento?",
     options: [
-      ["Sí, y me preocupa porque ya me esta costando dinero.", 0],
+      ["Sí, y me preocupa porque ya me está costando dinero.", 0],
       ["A veces. No siempre tengo claridad de qué se quedó pendiente.", 1],
       ["Rara vez. Tengo un sistema para dar seguimiento.", 2],
     ],
@@ -60,15 +60,15 @@ const questions = [
     options: [
       ["No. Solo sé que necesito ayuda urgente.", 0],
       ["Tengo ideas, pero no están priorizadas ni documentadas.", 1],
-      ["Sí. Se que delegar, que documentar y que conservar conmigo.", 2],
+      ["Sí. Sé qué delegar, qué documentar y qué conservar conmigo.", 2],
     ],
   },
   {
     text: "¿Tus precios, servicios y entregables están claramente definidos?",
     options: [
       ["No del todo. A veces adapto demasiado según cada cliente.", 0],
-      ["Estan definidos, pero aún hay excepciones que desordenan la operación.", 1],
-      ["Sí. Se que vendo, que incluye y como se entrega.", 2],
+      ["Están definidos, pero aún hay excepciones que desordenan la operación.", 1],
+      ["Sí. Sé qué vendo, qué incluye y cómo se entrega.", 2],
     ],
   },
   {
@@ -100,7 +100,7 @@ const questions = [
     options: [
       ["Pesada. Estoy apagando fuegos y sosteniendo demasiado.", 0],
       ["En transición. Ya veo que necesito ordenar para seguir creciendo.", 1],
-      ["Mas estable. Hay estructura, aunque siempre se puede mejorar.", 2],
+      ["Más estable. Hay estructura, aunque siempre se puede mejorar.", 2],
     ],
   },
 ];
@@ -134,16 +134,16 @@ const levels = [
     archetype: "La Operadora en Transición",
     archetypeText:
       "Ya tienes algunas bases, pero todavía hay huecos que te obligan a improvisar. Este es el momento ideal para convertir experiencia en sistema.",
-    buyerSignal: "Esta lista para priorizar procesos y delegar con criterio.",
+    buyerSignal: "Está lista para priorizar procesos y delegar con criterio.",
     visualSubtitle: "Hay avances, pero todavía falta una ruta clara.",
-    gap: "Procesos criticos sin instrucciones simples.",
-    handoff: "Priorizar que se delega, automatiza y documenta.",
+    gap: "Procesos críticos sin instrucciones simples.",
+    handoff: "Priorizar qué se delega, automatiza y documenta.",
     summary:
-      "Ya existen algunas bases, pero todavía hay partes importantes que dependen de improvisacion, excepciones o recordatorios manuales.",
+      "Ya existen algunas bases, pero todavía hay partes importantes que dependen de improvisación, excepciones o recordatorios manuales.",
     meaning:
-      "Este es el punto donde muchas duenas sienten que el negocio crece, pero también crecen los pendientes, las dudas y la supervision.",
+      "Este es el punto donde muchas dueñas sienten que el negocio crece, pero también crecen los pendientes, las dudas y la supervisión.",
     next:
-      "Prioriza 3 procesos criticos y conviertelos en instrucciones simples. Luego decide que se delega, que se automatiza y que necesita seguir bajo tu criterio.",
+      "Prioriza 3 procesos críticos y conviértelos en instrucciones simples. Luego decide qué se delega, qué se automatiza y qué necesita seguir bajo tu criterio.",
     review: ["Procesos que se repiten cada semana", "Tareas listas para delegar", "Herramientas que hoy están duplicando trabajo"],
   },
   {
@@ -164,7 +164,7 @@ const levels = [
       "Este nivel indica que no estás empezando desde cero. Ahora el trabajo es fortalecer la operación para que no dependa de estar encima de todo.",
     next:
       "Crea un mapa de responsabilidades y revisa dónde todavía eres el cuello de botella. Ese mapa te dirá qué rol, sistema o proceso debe venir después.",
-    review: ["Responsabilidades por area", "Indicadores de seguimiento", "Proceso de onboarding de cliente"],
+    review: ["Responsabilidades por área", "Indicadores de seguimiento", "Proceso de onboarding de cliente"],
   },
   {
     min: 22,
@@ -173,7 +173,7 @@ const levels = [
     label: "Listo para optimizar",
     archetype: "La CEO Optimizadora",
     archetypeText:
-      "Tu negocio tiene bases claras. El próximo salto esta en medir mejor, optimizar la experiencia del cliente y preparar decisiones con menos fricción.",
+      "Tu negocio tiene bases claras. El próximo salto está en medir mejor, optimizar la experiencia del cliente y preparar decisiones con menos fricción.",
     buyerSignal: "Busca optimización, indicadores y escala más fina.",
     visualSubtitle: "La estructura ya sostiene; ahora toca afinar.",
     gap: "Métricas y cuellos de botella finos.",
@@ -214,7 +214,7 @@ function postEmbedHeight() {
 
   window.parent.postMessage(
     {
-      source: "kleyi-diagnóstico-orden",
+      source: "kleyi-diagnostico-orden",
       height: height + 24,
     },
     "*"
