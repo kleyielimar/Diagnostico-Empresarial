@@ -1,5 +1,5 @@
 const CONFIG = {
-  bookingUrl: "https://kleyielimar.com/opciones-del-diagnostico/",
+  bookingUrl: "https://kleyielimar.com/servicios/",
   systemeFormAction: "https://systeme.io/embedded/46105223/subscription",
   supabaseUrl: "https://nrbrgovhgrrrwhnavszp.supabase.co",
   supabaseAnonKey: "sb_publishable_bJ_RuYKg4XgORYJXZ3klFA_zLs1BZx9",
@@ -701,12 +701,12 @@ intakeForm.addEventListener("submit", async (event) => {
   values.forEach((value, index) => { fields["diagnostico_r" + (index + 1)] = value; });
   button.disabled = true;
   button.textContent = "Enviando tus respuestas…";
-  status.textContent = "Estamos guardando tu contexto para el análisis personal.";
+  status.textContent = "Estamos enviando tus respuestas.";
   scheduleEmbedHeight();
   try {
     await registerWithSysteme("https://systeme.io/embedded/46115937/subscription", fields);
     localStorage.setItem("diagnosticoOrdenIntake", JSON.stringify({...lead, ...data}));
-    status.textContent = "Contexto recibido. Consulta los detalles del análisis personal opcional de $49.";
+    status.textContent = "Respuestas recibidas. Te escribo por correo en un máximo de 24 horas hábiles.";
     bookingLink.href = CONFIG.bookingUrl;
     bookingPanel.classList.remove("hidden");
     bookingPanel.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -714,7 +714,7 @@ intakeForm.addEventListener("submit", async (event) => {
     status.textContent = "No pudimos confirmar el envío de tu ficha. Tus respuestas siguen aquí. Revisa tu conexión y vuelve a intentarlo.";
   } finally {
     button.disabled = false;
-    button.textContent = "Enviar mi contexto";
+    button.textContent = "Enviar mis respuestas";
     scheduleEmbedHeight();
   }
 });
