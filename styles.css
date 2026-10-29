@@ -768,3 +768,5 @@ h1 {
 
 /* Lectura móvil y encabezado compacto */
 h1,h2,h3,p{overflow-wrap:normal;word-break:normal}h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.15;text-transform:none}.brand-lockup{margin:14px 0 20px}.score-preview{display:none}.header-grid{grid-template-columns:1fr}.lead{font-size:17px}.tool-header{padding-bottom:24px}body{font-size:17px;line-height:1.65}.question-title{line-height:1.35}@media(max-width:560px){h1{font-size:28px;line-height:1.2}.shell{padding-top:12px}.brand-lockup{margin:8px 0 14px}.tool-header{padding-bottom:18px}.cta-button{white-space:normal;padding:16px 20px}}
+
+.is-embedded .tool-header{display:none}.is-embedded .shell{padding-top:8px}
