@@ -273,17 +273,15 @@ const copySummaryBtn = document.getElementById("copySummaryBtn");
 const downloadCardBtn = document.getElementById("downloadCardBtn");
 
 function postEmbedHeight() {
-  const height = Math.max(
-    document.body.scrollHeight,
-    document.documentElement.scrollHeight,
-    document.body.offsetHeight,
-    document.documentElement.offsetHeight
-  );
+  // Mide solo el contenido (no la ventana), para que la página que lo inserta
+  // pueda ajustar la altura sin que crezca en bucle.
+  const shell = document.querySelector(".shell");
+  const height = Math.ceil(shell ? shell.getBoundingClientRect().height : document.body.offsetHeight);
 
   window.parent.postMessage(
     {
       source: "kleyi-diagnostico-orden",
-      height: height + 24,
+      height: height + 8,
     },
     "*"
   );
