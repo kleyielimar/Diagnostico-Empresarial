@@ -290,8 +290,10 @@ function postEmbedHeight() {
 const scheduleEmbedHeight = (() => {
   let frame = null;
   return () => {
-    if (frame) cancelAnimationFrame(frame);
-    frame = requestAnimationFrame(postEmbedHeight);
+    // setTimeout (no requestAnimationFrame): el navegador pausa las animaciones
+    // de un iframe fuera de pantalla y la altura nunca se enviaría.
+    if (frame) clearTimeout(frame);
+    frame = setTimeout(postEmbedHeight, 60);
   };
 })();
 
