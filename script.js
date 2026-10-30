@@ -297,6 +297,17 @@ const scheduleEmbedHeight = (() => {
   };
 })();
 
+// Marca pasos del embudo en Microsoft Clarity (no envía datos personales).
+function trackStep(eventName, tags = {}) {
+  try {
+    if (typeof window.clarity !== "function") return;
+    window.clarity("event", eventName);
+    Object.entries(tags).forEach(([key, value]) => window.clarity("set", key, String(value)));
+  } catch (error) {
+    // La medición nunca debe interrumpir el diagnóstico.
+  }
+}
+
 function getScore() {
   return answers.reduce((sum, value) => sum + (Number.isInteger(value) ? value : 0), 0);
 }
@@ -450,6 +461,7 @@ nextBtn.addEventListener("click", () => {
 
   document.querySelector(".diagnostic-layout").classList.add("hidden");
   capturePanel.classList.remove("hidden");
+  trackStep("diagnostico_completo");
   capturePanel.scrollIntoView({ behavior: "smooth", block: "start" });
   scheduleEmbedHeight();
 });
@@ -517,6 +529,7 @@ leadForm.addEventListener("submit", async (event) => {
     const payload = getLeadPayload("lead");
     await saveLeadRecord("lead", payload);
     status.textContent = "Registro confirmado.";
+    trackStep("lead_registrado", { arquetipo: payload.archetype, facturacion: getRevenue() });
     renderResult();
   } catch (error) {
     status.textContent = error.message || "No pudimos confirmar el registro. Inténtalo de nuevo.";
@@ -681,6 +694,7 @@ downloadCardBtn.addEventListener("click", () => {
 
 startIntakeBtn.addEventListener("click", () => {
   intakePanel.classList.remove("hidden");
+  trackStep("ficha_abierta");
   intakePanel.scrollIntoView({ behavior: "smooth", block: "start" });
   scheduleEmbedHeight();
 });
@@ -709,6 +723,7 @@ intakeForm.addEventListener("submit", async (event) => {
     await registerWithSysteme("https://systeme.io/embedded/46115937/subscription", fields);
     localStorage.setItem("diagnosticoOrdenIntake", JSON.stringify({...lead, ...data}));
     status.textContent = "Respuestas recibidas. Te escribo por correo en un máximo de 24 horas hábiles.";
+    trackStep("ficha_enviada");
     bookingLink.href = CONFIG.bookingUrl;
     bookingPanel.classList.remove("hidden");
     bookingPanel.scrollIntoView({ behavior: "smooth", block: "start" });
