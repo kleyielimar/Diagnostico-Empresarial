@@ -8,7 +8,7 @@
       name="description"
       content="Diagnóstico rápido para descubrir si tu negocio está listo para delegar o si todavía depende demasiado de ti."
     />
-    <link rel="stylesheet" href="styles.css?v=clarity-20261030" />
+    <link rel="stylesheet" href="styles.css?v=registro-inicial-20261103" />
     <script type="text/javascript">
       (function (c, l, a, r, i, t, y) {
         c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
@@ -51,7 +51,32 @@
         </div>
       </section>
 
-      <section class="diagnostic-layout" aria-live="polite">
+      <section class="capture-panel" id="startPanel" aria-labelledby="start-title">
+        <div>
+          <p class="eyebrow">Antes de empezar · gratuito</p>
+          <h2 id="start-title">Pongámosle nombre al próximo paso de tu negocio.</h2>
+          <p>Déjame tu nombre y correo y responde las 12 preguntas. Al terminar, confirma tu correo desde el enlace que recibirás para que pueda enviarte el resultado.</p>
+          <p style="font-size:14px;line-height:1.7">Guardaré tus datos al pulsar «Empezar», aunque no completes las preguntas, para darte seguimiento sobre este diagnóstico. Esto no te suscribe al newsletter.</p>
+        </div>
+        <form id="startForm" class="lead-form" method="post">
+          <label>
+            Nombre
+            <input id="leadName" maxlength="100" name="first_name" autocomplete="given-name" required />
+          </label>
+          <label>
+            Correo electrónico
+            <input id="leadEmail" name="email" type="email" autocomplete="email" required />
+          </label>
+
+          <label style="display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:1.6">
+            <input id="followupConsent" type="checkbox" required style="width:20px;height:20px;min-width:20px;margin-top:4px" />
+            <span>Acepto que Kleyi guarde mi nombre y correo y me contacte sobre este diagnóstico, incluso si no lo termino. Puedo pedir que deje de contactarme. <a href="https://kleyielimar.com/politica-de-privacidad/" target="_blank" rel="noopener">Privacidad</a>.</span>
+          </label>
+          <button class="primary-button" type="submit">Empezar mi diagnóstico gratuito</button>
+          <p id="startStatus" role="status" aria-live="polite" style="font-size:14px;line-height:1.6"></p>
+        </form>
+      </section>
+      <section class="diagnostic-layout hidden" aria-live="polite">
         <aside class="progress-panel">
           <div>
             <p class="panel-label">Progreso</p>
@@ -80,19 +105,10 @@
           <p class="eyebrow">Resultado listo</p>
           <h2 id="capture-title">Recibe tu diagnóstico completo</h2>
           <p>
-            Te mostraré tu nivel de dependencia operativa, tu arquetipo y la
-            primera acción recomendada para ordenar tu negocio.
+            Tu resultado aparecerá aquí. Para recibirlo también por correo, abre el mensaje de confirmación y pulsa su enlace. Revisa Spam o Promociones si no lo encuentras.
           </p>
         </div>
-        <form id="leadForm" class="lead-form">
-          <label>
-            Nombre
-            <input id="leadName" maxlength="100" name="first_name" autocomplete="given-name" required />
-          </label>
-          <label>
-            Correo electrónico
-            <input id="leadEmail" name="email" type="email" autocomplete="email" required />
-          </label>
+        <form id="leadForm" class="lead-form" method="post">
           <label>
             ¿Cuánto factura tu negocio al mes, aproximadamente?
             <select id="leadRevenue" name="revenue_range" required>
@@ -114,6 +130,11 @@
       </section>
 
       <section class="result-panel hidden" id="resultPanel" aria-labelledby="result-title">
+        <div id="emailConfirmation" style="margin-bottom:28px;padding:24px;background:#fff;border:2px solid #45625d;border-radius:20px">
+          <h2 style="font-size:24px">Confirma tu correo para recibir el resultado</h2>
+          <p>Abre el mensaje de confirmación y pulsa el enlace. El resultado por correo y las comunicaciones del registro quedan pendientes hasta que confirmes.</p>
+          <div id="confirmationFrameHost"></div>
+        </div>
         <div class="result-hero">
           <div class="result-main">
             <p class="eyebrow">Tu resultado</p>
@@ -261,7 +282,7 @@
       </section>
     </main>
 
-    <script src="script.js?v=clarity-20261030"></script>
+    <script src="script.js?v=registro-inicial-20261103"></script>
   </body>
 </html>
 

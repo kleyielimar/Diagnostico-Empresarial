@@ -1,4 +1,5 @@
 const CONFIG = {
+  startFormAction: "https://systeme.io/embedded/46375374/subscription",
   bookingUrl: "https://kleyielimar.com/servicios/",
   systemeFormAction: "https://systeme.io/embedded/46105223/subscription",
   supabaseUrl: "https://nrbrgovhgrrrwhnavszp.supabase.co",
@@ -467,12 +468,13 @@ nextBtn.addEventListener("click", () => {
 });
 
 // Use the official embedded form, with a confirmed redirect rather than an opaque fetch.
-function registerWithSysteme(action = CONFIG.systemeFormAction, extraFields = {}) {
+function registerWithSysteme(action = CONFIG.systemeFormAction, extraFields = {}, showConfirmation = false) {
   return new Promise((resolve, reject) => {
     const nonce = crypto.randomUUID();
     const frame = document.createElement("iframe");
     frame.name = `systeme-registration-${nonce}`;
-    frame.hidden = true;
+    frame.hidden = !showConfirmation;
+    if (showConfirmation) { frame.style.cssText = "width:100%;height:280px;border:0;border-radius:12px;background:white"; frame.title = "Estado del registro y confirmación del correo"; }
     frame.title = "Confirmación del registro";
     const form = document.createElement("form");
     form.method = "post";
@@ -491,13 +493,15 @@ function registerWithSysteme(action = CONFIG.systemeFormAction, extraFields = {}
       input.value = value;
       form.append(input);
     }
-    document.body.append(frame, form);
+    if (showConfirmation) document.getElementById("confirmationFrameHost").replaceChildren(frame);
+    else document.body.append(frame);
+    document.body.append(form);
     let timer;
     function cleanup() {
       window.removeEventListener("message", onMessage);
       clearTimeout(timer);
       form.remove();
-      frame.remove();
+      if (!showConfirmation) frame.remove();
     }
     function onMessage(event) {
       if (event.origin !== location.origin || event.source !== frame.contentWindow) return;
@@ -511,8 +515,34 @@ function registerWithSysteme(action = CONFIG.systemeFormAction, extraFields = {}
       reject(new Error("No pudimos confirmar tu registro. Tus respuestas siguen aquí. Revisa tu conexión e inténtalo de nuevo."));
     }, 45000);
     form.submit();
+    if (showConfirmation) { clearTimeout(timer); resolve(); }
   });
 }
+
+
+const startPanel = document.getElementById("startPanel");
+const startForm = document.getElementById("startForm");
+if (startForm) startForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!startForm.reportValidity()) return;
+  const button = startForm.querySelector('button[type="submit"]');
+  if (button.disabled) return;
+  button.disabled = true;
+  const status = document.getElementById("startStatus");
+  status.textContent = "Guardando tu registro…";
+  try {
+    await registerWithSysteme(CONFIG.startFormAction);
+    startPanel.classList.add("hidden");
+    document.querySelector(".diagnostic-layout").classList.remove("hidden");
+    document.querySelector(".diagnostic-layout").scrollIntoView({behavior:"smooth",block:"start"});
+    trackStep("diagnostico_iniciado");
+  } catch (error) {
+    status.textContent = "No pudimos confirmar tu registro. Revisa tu conexión y vuelve a pulsar Empezar; tus datos siguen aquí.";
+  } finally {
+    button.disabled = false;
+    scheduleEmbedHeight();
+  }
+});
 
 leadForm.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -525,11 +555,11 @@ leadForm.addEventListener("submit", async (event) => {
   status.textContent = "Estamos confirmando tu registro. Conservaremos tus respuestas en esta página.";
   scheduleEmbedHeight();
   try {
-    await registerWithSysteme(CONFIG.systemeFormAction, getSystemeLeadFields());
+    await registerWithSysteme(CONFIG.systemeFormAction, getSystemeLeadFields(), true);
     const payload = getLeadPayload("lead");
     await saveLeadRecord("lead", payload);
-    status.textContent = "Registro confirmado.";
-    trackStep("lead_registrado", { arquetipo: payload.archetype, facturacion: getRevenue() });
+    status.textContent = "Revisa tu correo y confirma el enlace para recibir el resultado.";
+    trackStep("diagnostico_resultado_solicitado", { arquetipo: payload.archetype, facturacion: getRevenue() });
     renderResult();
   } catch (error) {
     status.textContent = error.message || "No pudimos confirmar el registro. Inténtalo de nuevo.";
