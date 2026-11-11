@@ -1,6 +1,6 @@
 const CONFIG = {
   startFormAction: "https://systeme.io/embedded/46375374/subscription",
-  bookingUrl: "https://kleyielimar.com/servicios/",
+  bookingUrl: "https://kleyielimar.com/1-2-01-diagnostico-estrategico-360/",
   systemeFormAction: "https://systeme.io/embedded/46105223/subscription",
   supabaseUrl: "https://nrbrgovhgrrrwhnavszp.supabase.co",
   supabaseAnonKey: "sb_publishable_bJ_RuYKg4XgORYJXZ3klFA_zLs1BZx9",
@@ -273,6 +273,71 @@ const bookingLink = document.getElementById("bookingLink");
 const copySummaryBtn = document.getElementById("copySummaryBtn");
 const downloadCardBtn = document.getElementById("downloadCardBtn");
 
+let diagnosticSource = "web";
+let completionRecorded = false;
+let contextAccepted = false;
+const SESSION_KEY = "ke-diagnostic-session-v2";
+function persistSession(completed = false) {
+  try { sessionStorage.setItem(SESSION_KEY, JSON.stringify({name:document.getElementById("leadName").value,email:document.getElementById("leadEmail").value,answers,currentQuestion,source:diagnosticSource,completed,at:Date.now()})); } catch {}
+}
+function beginWithContext(lead, source = "podcast") {
+  if (contextAccepted || !lead || typeof lead.email !== "string" || typeof lead.first_name !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lead.email) || !lead.first_name.trim()) return;
+  contextAccepted = true;
+  diagnosticSource = source === "podcast" ? "podcast" : "web";
+  document.getElementById("leadName").value = lead.first_name.slice(0,100);
+  document.getElementById("leadEmail").value = lead.email;
+  document.getElementById("followupConsent").checked = true;
+  document.getElementById("startPanel").classList.add("hidden");
+  document.querySelector(".diagnostic-layout").classList.remove("hidden");
+  document.querySelector(".tool-header").classList.add("is-started");
+  persistSession();
+  scheduleEmbedHeight();
+}
+window.addEventListener("message", event => {
+  if (event.origin !== "https://info.kleyielimar.com" || event.source !== window.parent) return;
+  if (event.data?.type === "ke-lead-context") beginWithContext(event.data.lead,event.data.source);
+});
+function requestLeadContext() {
+  if (window.parent !== window) window.parent.postMessage({type:"ke-diagnostic-ready"},"https://info.kleyielimar.com");
+}
+async function recordCompletion() {
+  if(completionRecorded)return;
+  completionRecorded = true;
+  const status = document.getElementById("resultSaveStatus");
+  status.textContent = "Tu resultado ya está listo. Puedes guardarlo abajo.";
+  try { await saveLeadRecord("lead"); }
+  catch { status.textContent = "Tu resultado está disponible aquí, pero no pudimos guardarlo en el servidor. Descarga el resumen para conservarlo."; }
+  registerWithSysteme(CONFIG.systemeFormAction,getSystemeLeadFields(),false).catch(() => {
+    // A delayed external confirmation never hides or blocks the result.
+    trackStep("registro_resultado_sin_confirmacion");
+  });
+}
+function renderAreaMap() {
+  const totals = {};
+  questionAreas.forEach((key,i) => {if(!Number.isInteger(answers[i]))return; const t=totals[key] ||= {sum:0,count:0};t.sum+=answers[i];t.count++;});
+  document.getElementById("areaMap").innerHTML = Object.entries(areas).map(([key,area]) => {
+    const t=totals[key],avg=t?t.sum/t.count:0;
+    const state=avg===2?"Base sólida":avg>=1?"En desarrollo":"Prioridad de atención";
+    const explanation=avg===2?"Tus respuestas señalan prácticas claras en esta área. Mantén su seguimiento.":area.action;
+    return `<article class="area-tile ${avg===2?'solid':avg>=1?'developing':'priority'}"><span class="area-state">${state}</span><h4>${area.name}</h4><p>${explanation}</p></article>`;
+  }).join("");
+}
+function downloadDetailedReport() {
+  const canvas=document.createElement("canvas");canvas.width=1080;canvas.height=1900;const ctx=canvas.getContext("2d");
+  ctx.fillStyle="#E6F1EE";ctx.fillRect(0,0,1080,1900);ctx.fillStyle="#FFFFFF";drawRoundedRect(ctx,48,48,984,1804,30);
+  ctx.fillStyle="#45625D";ctx.font="700 30px Arial";ctx.fillText("Kleyi Elimar · Tu resultado",96,118);
+  ctx.font="700 48px Arial";wrapText(ctx,"Autodiagnóstico de orden empresarial",96,200,870,58,2);
+  ctx.font="700 54px Arial";wrapText(ctx,getLevel().archetype,96,370,870,64,2);
+  ctx.font="700 36px Arial";ctx.fillText(`${getScore()}/24 · Orden actual según tus respuestas`,96,550);
+  ctx.font="28px Arial";wrapText(ctx,getLevel().summary,96,620,870,39,4);
+  ctx.font="700 34px Arial";ctx.fillText("Tus prioridades y primeras acciones",96,830);
+  const weak=getWeakAreas();
+  (weak.length?weak:[{name:"Mantener tu base",action:"Revisa tiempos, calidad y carga de trabajo cada semana para conservar la estructura que ya funciona."}]).forEach((area,i)=>{const y=910+i*240;ctx.fillStyle="#E6F1EE";drawRoundedRect(ctx,80,y-45,920,215,18);ctx.fillStyle="#45625D";ctx.font="700 30px Arial";wrapText(ctx,`${i+1}. ${area.name}`,104,y,850,38,2);ctx.font="27px Arial";wrapText(ctx,area.action,104,y+70,850,38,3);});
+  ctx.fillStyle="#45625D";ctx.font="700 30px Arial";ctx.fillText("¿Quieres que revise tu negocio personalmente?",96,1685);ctx.font="26px Arial";wrapText(ctx,"Diagnóstico empresarial 360 · Informe, video y plan de trabajo · $49 USD",96,1740,870,34,2);
+  ctx.font="22px Arial";ctx.fillText("kleyielimar.com · Orientación basada en tus respuestas",96,1820);
+  const a=document.createElement("a");a.download="mi-resultado-kleyi-elimar.png";a.href=canvas.toDataURL("image/png");a.click();
+}
+
 function postEmbedHeight() {
   // Mide solo el contenido (no la ventana), para que la página que lo inserta
   // pueda ajustar la altura sin que crezca en bucle.
@@ -340,7 +405,7 @@ function getWeakAreas(limit = 3) {
 
 function getMainGap() {
   const [first] = getWeakAreas(1);
-  return first ? first.gap : getLevel().gap;
+  return first ? first.gap : "Tus respuestas muestran una base organizada en todas las áreas evaluadas.";
 }
 
 function getRevenue() {
@@ -359,7 +424,7 @@ function getLeadPayload(stage, extra = {}) {
     buyer_signal: level.buyerSignal,
     revenue_range: getRevenue(),
     completed_at: new Date().toISOString(),
-    payload: { weak_areas: getWeakAreas().map((area) => area.name), answers: [...answers] },
+    payload: { source: diagnosticSource, weak_areas: getWeakAreas().map((area) => area.name), answers: [...answers] },
     ...extra,
   };
 }
@@ -386,7 +451,7 @@ async function saveLeadRecord(stage, extra = {}) {
 
   if (!CONFIG.supabaseUrl || !CONFIG.supabaseAnonKey) return payload;
 
-  await fetch(`${CONFIG.supabaseUrl}/rest/v1/${CONFIG.supabaseTable}`, {
+  const response = await fetch(`${CONFIG.supabaseUrl}/rest/v1/${CONFIG.supabaseTable}`, {
     method: "POST",
     headers: {
       apikey: CONFIG.supabaseAnonKey,
@@ -395,8 +460,8 @@ async function saveLeadRecord(stage, extra = {}) {
       Prefer: "return=minimal",
     },
     body: JSON.stringify(payload),
-  }).catch(() => null);
-
+  });
+  if (!response.ok) throw new Error("No pudimos guardar tu resultado en el servidor.");
   return payload;
 }
 
@@ -441,6 +506,7 @@ function renderQuestion() {
 questionStage.addEventListener("change", (event) => {
   if (event.target.name !== "question") return;
   answers[currentQuestion] = Number(event.target.value);
+  persistSession();
   nextBtn.disabled = false;
   liveLevel.textContent = getAnsweredCount() < 4 ? "En evaluación" : getLevel().label;
   scheduleEmbedHeight();
@@ -456,15 +522,16 @@ nextBtn.addEventListener("click", () => {
   if (answers[currentQuestion] === null) return;
   if (currentQuestion < questions.length - 1) {
     currentQuestion += 1;
+    persistSession();
     renderQuestion();
     return;
   }
 
   document.querySelector(".diagnostic-layout").classList.add("hidden");
-  capturePanel.classList.remove("hidden");
   trackStep("diagnostico_completo");
-  capturePanel.scrollIntoView({ behavior: "smooth", block: "start" });
-  scheduleEmbedHeight();
+  persistSession(true);
+  renderResult();
+  recordCompletion();
 });
 
 // Use the official embedded form, with a confirmed redirect rather than an opaque fetch.
@@ -473,8 +540,8 @@ function registerWithSysteme(action = CONFIG.systemeFormAction, extraFields = {}
     const nonce = crypto.randomUUID();
     const frame = document.createElement("iframe");
     frame.name = `systeme-registration-${nonce}`;
-    frame.hidden = !showConfirmation;
-    if (showConfirmation) { frame.style.cssText = "width:100%;height:280px;border:0;border-radius:12px;background:white"; frame.title = "Estado del registro y confirmación del correo"; }
+    frame.hidden = true;
+
     frame.title = "Confirmación del registro";
     const form = document.createElement("form");
     form.method = "post";
@@ -493,8 +560,7 @@ function registerWithSysteme(action = CONFIG.systemeFormAction, extraFields = {}
       input.value = value;
       form.append(input);
     }
-    if (showConfirmation) document.getElementById("confirmationFrameHost").replaceChildren(frame);
-    else document.body.append(frame);
+    document.body.append(frame);
     document.body.append(form);
     let timer;
     function cleanup() {
@@ -515,7 +581,7 @@ function registerWithSysteme(action = CONFIG.systemeFormAction, extraFields = {}
       reject(new Error("No pudimos confirmar tu registro. Tus respuestas siguen aquí. Revisa tu conexión e inténtalo de nuevo."));
     }, 45000);
     form.submit();
-    if (showConfirmation) { clearTimeout(timer); resolve(); }
+
   });
 }
 
@@ -535,37 +601,13 @@ if (startForm) startForm.addEventListener("submit", async (event) => {
     startPanel.classList.add("hidden");
     document.querySelector(".diagnostic-layout").classList.remove("hidden");
     document.querySelector(".diagnostic-layout").scrollIntoView({behavior:"smooth",block:"start"});
+    document.querySelector(".tool-header").classList.add("is-started");
+    persistSession();
     trackStep("diagnostico_iniciado");
   } catch (error) {
     status.textContent = "No pudimos confirmar tu registro. Revisa tu conexión y vuelve a pulsar Empezar; tus datos siguen aquí.";
   } finally {
     button.disabled = false;
-    scheduleEmbedHeight();
-  }
-});
-
-leadForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  if (!leadForm.reportValidity()) return;
-  const button = leadForm.querySelector('button[type="submit"]');
-  const status = document.getElementById("registrationStatus");
-  if (button.disabled) return;
-  button.disabled = true;
-  button.textContent = "Registrando…";
-  status.textContent = "Estamos confirmando tu registro. Conservaremos tus respuestas en esta página.";
-  scheduleEmbedHeight();
-  try {
-    await registerWithSysteme(CONFIG.systemeFormAction, getSystemeLeadFields(), true);
-    const payload = getLeadPayload("lead");
-    await saveLeadRecord("lead", payload);
-    status.textContent = "Revisa tu correo y confirma el enlace para recibir el resultado.";
-    trackStep("diagnostico_resultado_solicitado", { arquetipo: payload.archetype, facturacion: getRevenue() });
-    renderResult();
-  } catch (error) {
-    status.textContent = error.message || "No pudimos confirmar el registro. Inténtalo de nuevo.";
-  } finally {
-    button.disabled = false;
-    button.textContent = "Ver mi resultado";
     scheduleEmbedHeight();
   }
 });
@@ -578,21 +620,22 @@ function renderResult() {
   document.getElementById("resultScore").textContent = `${score}/24`;
   document.getElementById("archetypeLabel").textContent = level.archetype;
   document.getElementById("archetypeText").textContent = level.archetypeText;
-  document.getElementById("buyerSignal").textContent = level.buyerSignal;
+  document.getElementById("buyerSignal").textContent = getWeakAreas()[0]?.action || "Mantén las prácticas que ya funcionan y revisa tus tiempos e indicadores periódicamente.";
+  renderAreaMap();
   document.getElementById("shareArchetype").textContent = level.archetype;
   document.getElementById("shareSubtitle").textContent = level.visualSubtitle;
   document.getElementById("shareScore").textContent = `${score}/24`;
   document.getElementById("shareGap").textContent = getMainGap();
   document.getElementById("shareNext").textContent = level.handoff;
-  document.getElementById("nextStepText").textContent = level.next;
+  document.getElementById("nextStepText").textContent = getWeakAreas()[0]?.action || "Elige un indicador de calidad o tiempo de entrega y revísalo cada semana para detectar cambios antes de que generen problemas.";
   const weakAreas = getWeakAreas();
   document.getElementById("reviewList").innerHTML = weakAreas.length
     ? weakAreas
         .map((area) => `<li><strong>${area.name}.</strong> ${area.gap} <span>${area.action}</span></li>`)
         .join("")
-    : level.review.map((item) => `<li>${item}</li>`).join("");
+    : "<li><strong>Conserva lo que funciona.</strong> Tus respuestas no señalan áreas por debajo del máximo. Revisa periódicamente tiempos, calidad y carga de trabajo para comprobar que esa base se mantiene.</li>";
 
-  capturePanel.classList.add("hidden");
+  capturePanel?.classList.add("hidden");
   resultPanel.classList.remove("hidden");
   resultPanel.scrollIntoView({ behavior: "smooth", block: "start" });
   scheduleEmbedHeight();
@@ -650,120 +693,10 @@ function drawRoundedRect(ctx, x, y, width, height, radius) {
   ctx.fill();
 }
 
-downloadCardBtn.addEventListener("click", () => {
-  const level = getLevel();
-  const canvas = document.createElement("canvas");
-  canvas.width = 1080;
-  canvas.height = 1350;
-  const ctx = canvas.getContext("2d");
-
-  ctx.fillStyle = "#e9f5f6";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  ctx.fillStyle = "#a3d2d5";
-  ctx.globalAlpha = 0.55;
-  ctx.beginPath();
-  ctx.arc(920, 170, 300, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(150, 1180, 360, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.globalAlpha = 1;
-
-  ctx.fillStyle = "#ffffff";
-  drawRoundedRect(ctx, 72, 88, 936, 1174, 28);
-
-  ctx.fillStyle = "#6aa5a9";
-  ctx.font = "700 32px Arial";
-  ctx.fillText("Kleyi Elimar", 120, 160);
-
-  ctx.fillStyle = "#45625d";
-  ctx.font = "900 58px Arial";
-  wrapText(ctx, "Diagnóstico de Orden Empresarial", 120, 250, 820, 68, 3);
-
-  ctx.fillStyle = "#6aa5a9";
-  ctx.font = "700 28px Arial";
-  ctx.fillText("Tu arquetipo operativo", 120, 460);
-
-  ctx.fillStyle = "#45625d";
-  ctx.font = "900 74px Arial";
-  wrapText(ctx, level.archetype, 120, 550, 820, 82, 3);
-
-  ctx.fillStyle = "#45625d";
-  drawRoundedRect(ctx, 120, 760, 270, 180, 22);
-  ctx.fillStyle = "#ffffff";
-  ctx.font = "900 64px Arial";
-  ctx.fillText(`${getScore()}/24`, 158, 845);
-  ctx.font = "700 24px Arial";
-  ctx.fillText("Orden actual", 158, 890);
-
-  ctx.fillStyle = "#eef8f8";
-  drawRoundedRect(ctx, 430, 760, 458, 180, 22);
-  ctx.fillStyle = "#6aa5a9";
-  ctx.font = "700 24px Arial";
-  ctx.fillText("Brecha principal", 470, 820);
-  ctx.fillStyle = "#45625d";
-  ctx.font = "800 34px Arial";
-  wrapText(ctx, getMainGap(), 470, 870, 360, 42, 3);
-
-  ctx.fillStyle = "#45625d";
-  ctx.font = "700 30px Arial";
-  ctx.fillText("Siguiente paso", 120, 1040);
-  ctx.font = "900 44px Arial";
-  wrapText(ctx, level.handoff, 120, 1110, 820, 54, 3);
-
-  ctx.fillStyle = "#6aa5a9";
-  ctx.font = "700 24px Arial";
-  ctx.fillText("info.kleyielimar.com/diagnosticoexpresspublic", 120, 1215);
-
-  const link = document.createElement("a");
-  link.download = "diagnostico-orden-empresarial-kleyi.png";
-  link.href = canvas.toDataURL("image/png");
-  link.click();
-});
-
+downloadCardBtn.addEventListener("click", downloadDetailedReport);
 startIntakeBtn.addEventListener("click", () => {
-  intakePanel.classList.remove("hidden");
-  trackStep("ficha_abierta");
-  intakePanel.scrollIntoView({ behavior: "smooth", block: "start" });
-  scheduleEmbedHeight();
-});
-
-intakeForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  if (!intakeForm.reportValidity()) return;
-  const button = intakeForm.querySelector('button[type="submit"]');
-  if (button.disabled) return;
-  const status = document.getElementById("intakeStatus");
-  const data = Object.fromEntries(new FormData(intakeForm).entries());
-  const lead = getLeadPayload("intake");
-  const values = [data.business_type, getRevenue(), data.main_problem, data.attempted_fix, data.desired_outcome, data.team_status];
-  if (values.some(value => !value || value.length > 255) || lead.first_name.length > 100) {
-    status.textContent = "Escribe respuestas de hasta 255 caracteres y un nombre de hasta 100 caracteres.";
-    return;
-  }
-  const summary = ["Nombre: " + lead.first_name, "Puntuación: " + lead.score + "/24", "Perfil: " + lead.archetype, "Enviado: " + new Date().toISOString()].join("\n");
-  const fields = {diagnostico_ficha: summary};
-  values.forEach((value, index) => { fields["diagnostico_r" + (index + 1)] = value; });
-  button.disabled = true;
-  button.textContent = "Enviando tus respuestas…";
-  status.textContent = "Estamos enviando tus respuestas.";
-  scheduleEmbedHeight();
-  try {
-    await registerWithSysteme("https://systeme.io/embedded/46115937/subscription", fields);
-    localStorage.setItem("diagnosticoOrdenIntake", JSON.stringify({...lead, ...data}));
-    status.textContent = "Respuestas recibidas. Te escribo por correo en un máximo de 24 horas hábiles.";
-    trackStep("ficha_enviada");
-    bookingLink.href = CONFIG.bookingUrl;
-    bookingPanel.classList.remove("hidden");
-    bookingPanel.scrollIntoView({ behavior: "smooth", block: "start" });
-  } catch (error) {
-    status.textContent = "No pudimos confirmar el envío de tu ficha. Tus respuestas siguen aquí. Revisa tu conexión y vuelve a intentarlo.";
-  } finally {
-    button.disabled = false;
-    button.textContent = "Enviar mis respuestas";
-    scheduleEmbedHeight();
-  }
+  trackStep("beneficios_diagnostico_360");
+  window.open(CONFIG.bookingUrl, "_blank", "noopener,noreferrer");
 });
 
 window.addEventListener("load", scheduleEmbedHeight);
@@ -779,3 +712,15 @@ scheduleEmbedHeight();
 // La página que lo inserta puede tardar en escuchar; se reenvía la altura al inicio.
 [600, 1500, 3000, 6000].forEach((ms) => setTimeout(scheduleEmbedHeight, ms));
 
+
+
+requestLeadContext();
+[500,1200,2500].forEach(ms => setTimeout(requestLeadContext,ms));
+try {
+  const saved=JSON.parse(sessionStorage.getItem(SESSION_KEY)||"null");
+  if(saved && Date.now()-saved.at<7200000 && saved.email && saved.name){
+    beginWithContext({first_name:saved.name,email:saved.email},saved.source);
+    if(Array.isArray(saved.answers)&&saved.answers.length===questions.length){saved.answers.forEach((v,i)=>answers[i]=[0,1,2].includes(v)?v:null);currentQuestion=Math.max(0,Math.min(11,saved.currentQuestion||0));renderQuestion();}
+    if(saved.completed && getAnsweredCount()===12){document.querySelector(".diagnostic-layout").classList.add("hidden");renderResult();persistSession(true);}
+  }
+} catch {}
