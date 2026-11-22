@@ -2,5 +2,9 @@
 <html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Registro confirmado | Kleyi Elimar</title>
 <body><p>Tu registro se completó. Puedes volver a tu diagnóstico.</p>
 <script>
-if (window.parent !== window) window.parent.postMessage({type:"systeme-registration-confirmed"}, location.origin);
+if (window.parent !== window) {
+  ["https://info.kleyielimar.com", "https://kleyielimar.github.io"].forEach(function(origin) {
+    window.parent.postMessage({type:"systeme-registration-confirmed"}, origin);
+  });
+}
 </script></body></html>
